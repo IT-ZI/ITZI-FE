@@ -1,0 +1,2 @@
+﻿  ConsoleApplication1.cpp
+C:\Users\윤세진\Desktop\2025\wagi\week08\task\week08_task\ConsoleApplication1\ConsoleApplication1.cpp(4,5): error C2632: 'int' 다음에 'bool'이(가) 올 수 없습니다.
