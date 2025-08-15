@@ -1,4 +1,3 @@
-import React from 'react'
 import styles from "../../assets/scss/section/nav.module.scss"
 import banner1 from "../../assets/img/banner.png"
 import banner2 from "../../assets/img/banner2.png"

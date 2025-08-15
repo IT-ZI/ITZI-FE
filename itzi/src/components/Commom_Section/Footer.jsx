@@ -1,4 +1,3 @@
-import React from 'react'
 import styles from "../../assets/scss/section/footer.module.scss"
 import instargram from "../../assets/img/instargram.png"
 import blog from "../../assets/img/blog.png"
