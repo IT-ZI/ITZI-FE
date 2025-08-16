@@ -1,10 +1,10 @@
-import Footer from "./components/Commom_Section/Footer"
-import Nav from "./components/Commom_Section/Nav"
-import Main from "./components/Main"
+import Footer from "./components/common/Footer.jsx"
+import Nav from "./components/common/Nav.jsx"
+import Main from "./components/Main.jsx"
 
 const App = () => {
   return (
-    <div>
+    <div className="body">
       <Nav/>
       <Main/>
       <Footer/>

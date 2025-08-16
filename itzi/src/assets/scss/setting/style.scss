@@ -1,3 +1,7 @@
 @charset "UTF-8";
 
-@use "../section/main"
+@use "../section/main";
+
+// section 
+@use "../section/nav";
+@use "../section/footer";
