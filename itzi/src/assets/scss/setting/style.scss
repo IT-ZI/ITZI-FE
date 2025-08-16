@@ -1,5 +1,8 @@
 @charset "UTF-8";
 
-// 자신이 만든 scss 파일은 section 폴더 안에 만들어주세요
-@use "section/footer";
-@use "section/nav";
+@use "../section/common/main";
+
+// section 
+@use "../section/common/nav";
+@use "../section/common/footer";
+@use "../../scss/section/common/profiledropdown"
