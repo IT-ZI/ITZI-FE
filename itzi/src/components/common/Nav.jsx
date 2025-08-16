@@ -44,7 +44,9 @@ const Nav = () => {
                 </div>
             </div>
         </div>
-        {isOpen && <ProfileDropdown/>}
+        <div className="toggle">
+            {isOpen && <ProfileDropdown/>}
+        </div>
     </div>
     )
 }
