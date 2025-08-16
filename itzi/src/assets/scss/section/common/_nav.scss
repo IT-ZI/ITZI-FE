@@ -26,6 +26,14 @@
         align-items: center;
         cursor: pointer;
     }
+    .banner1{
+        width: 65px;
+        height: 61.388px;
+    }
+    .banner2{
+        width: 41.386px;
+        height: 23.617px;
+    }
 
     .button_container{
         display:flex;
@@ -69,5 +77,13 @@
         top:45px;
         z-index: 999;
         right:60px;
+    }
+    .profile{
+        width: 30.331px;
+        height: 31.163px;
+    }
+    .alarm{
+        width: 16.348px;
+        height: 20px;
     }
 }
