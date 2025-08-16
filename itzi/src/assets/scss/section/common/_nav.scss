@@ -1,4 +1,7 @@
 .nav{
+    width:1440px;
+    position: relative;
+
     .container{
         height:51px;
         display:flex;
@@ -60,10 +63,11 @@
     .icon_container>img{
         cursor: pointer;
     }
+    
     .toggle{
         position:absolute;
-        top:55px;
-        right:100px;
+        top:45px;
         z-index: 999;
+        right:60px;
     }
 }
