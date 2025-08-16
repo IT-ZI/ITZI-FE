@@ -28,7 +28,7 @@
         gap:22px;
     }
 
-    .button_container>button{
+    .button_container>.tab{
         background: none;
         border: none;
         -webkit-appearance: none;
@@ -36,15 +36,18 @@
         font-size: 16px;
         font-style: normal;
         font-weight: 600;
-        color:#3A3B4D;
         cursor: pointer;
+        color:#A5A8C3;
+    }
+    .button_container>.tab.active {
+        color:#3A3B4D;
     }
 
     .button_container>p{
         font-size: 16px;
         font-style: normal;
         font-weight: 600;
-        color:#3A3B4D;
+        color:#A5A8C3;
     }
 
     .icon_container{
