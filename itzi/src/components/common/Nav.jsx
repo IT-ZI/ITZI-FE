@@ -3,18 +3,24 @@ import banner2 from "../../assets/img/banner2.png"
 import alarm from "../../assets/img/alarm.png"
 import profile from "../../assets/img/profile.png"
 import { useEffect, useState } from "react"
+import ProfileDropdown from "./ProfileDropdown"
 
 
 const Nav = () => {
 
     const [activeTab, setActiveTab] = useState("benefits");
+    const [isOpen, setIsOpen] = useState(false);
 
     const handleClickTab = (name) => {
         setActiveTab(name);
     }
 
+    const toggleProfile = () => {
+        setIsOpen(v => !v);
+    }
+
     useEffect(() => {
-        console.log("state가 변경된 후 activeTab :", activeTab)
+        console.log("activeTab :", activeTab)
     },[activeTab])
 
     return (
@@ -34,10 +40,11 @@ const Nav = () => {
             <div className="nav_right">
                 <div className="icon_container">
                     <img src={alarm} alt="" />
-                    <img src={profile} alt="" />
+                    <img className="profile" src={profile} onClick={toggleProfile} alt="" />
                 </div>
             </div>
         </div>
+        {isOpen && <ProfileDropdown/>}
     </div>
     )
 }

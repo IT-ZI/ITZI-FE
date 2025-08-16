@@ -1,7 +1,8 @@
 @charset "UTF-8";
 
-@use "../section/main";
+@use "../section/common/main";
 
 // section 
-@use "../section/nav";
-@use "../section/footer";
+@use "../section/common/nav";
+@use "../section/common/footer";
+@use "../../scss/section/common/profiledropdown"
