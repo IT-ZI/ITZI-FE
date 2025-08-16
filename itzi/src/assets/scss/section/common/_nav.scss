@@ -41,6 +41,8 @@
     }
 
     .button_container>.tab{
+        display:flex;
+        align-items: center;
         background: none;
         border: none;
         -webkit-appearance: none;
@@ -50,6 +52,7 @@
         font-weight: 600;
         cursor: pointer;
         color:#A5A8C3;
+        text-decoration: none;
     }
     .button_container>.tab.active {
         color:#3A3B4D;

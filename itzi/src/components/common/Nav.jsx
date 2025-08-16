@@ -2,26 +2,17 @@ import banner1 from "../../assets/img/banner.png"
 import banner2 from "../../assets/img/banner2.png"
 import alarm from "../../assets/img/alarm.png"
 import profile from "../../assets/img/profile2.png"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import ProfileDropdown from "./ProfileDropdown"
+import { NavLink } from "react-router-dom"
 
 
 const Nav = () => {
-
-    const [activeTab, setActiveTab] = useState("benefits");
     const [isOpen, setIsOpen] = useState(false);
-
-    const handleClickTab = (name) => {
-        setActiveTab(name);
-    }
 
     const toggleProfile = () => {
         setIsOpen(v => !v);
     }
-
-    useEffect(() => {
-        console.log("activeTab :", activeTab)
-    },[activeTab])
 
     return (
     <div className='nav'>
@@ -32,9 +23,9 @@ const Nav = () => {
                     <img className="banner2" src={banner2} alt="" />
                 </div>
                 <div className="button_container">
-                    <button className={`tab ${activeTab==="benefits"? "active" : ""}`} role="tab" onClick={() => handleClickTab("benefits")}>혜택이 잇ZI</button>
+                    <NavLink to="/benefits" className={({ isActive }) => `tab ${isActive ? "active" : ""}`}>혜택이 잇ZI</NavLink>
                     <p>|</p>
-                    <button className={`tab ${activeTab==="cooperation"? "active" : ""}`} role="tab" onClick={() => handleClickTab("cooperation")}>제휴를 잇ZI</button>
+                    <NavLink to="/cooperation" className={({ isActive }) => `tab ${isActive ? "active" : ""}`}>제휴를 잇ZI</NavLink>
                 </div>
             </div>
             <div className="nav_right">
