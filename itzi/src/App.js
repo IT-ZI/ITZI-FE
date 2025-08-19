@@ -2,7 +2,8 @@ import { Route, Routes, Navigate} from "react-router-dom"
 import RootLayout from "./layouts/RootLayout"
 import Benefits from "./pages/home/Benefits"
 import Cooperation from "./pages/home/Cooperation"
-import StoreDetail from "./pages/detailpage/StoreDetail"
+import BenefitList from "./pages/detailpage/benefitList"
+import Cooperationlist from "./pages/detailpage/cooperationlist"
 
 const App = () => {
   return (
@@ -11,7 +12,8 @@ const App = () => {
         <Route index element={<Navigate to="/benefits" replace />}/>
         <Route path="benefits" element={<Benefits/>}/>
         <Route path="cooperation" element={<Cooperation/>}/>
-        <Route path="detail" element={<StoreDetail/>}/>
+        <Route path="benefitlist" element={<BenefitList/>}/>
+        <Route path="cooperationlist" element={<Cooperationlist/>}/>
       </Route>
     </Routes>
   )

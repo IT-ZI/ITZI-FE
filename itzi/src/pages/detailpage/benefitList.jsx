@@ -5,9 +5,9 @@ import Image from "../../assets/img/foodimg.png"
 import storeImage from "../../assets/img/ramenstore.png"
 import filledStar from "../../assets/img/star.png"
 
-const StoreDetail = () => {
+const BenefitList = () => {
   return (
-    <div className="storeDetail">
+    <div className="benefitlist">
       <div className="header">
         <img src={prior} alt="" />
         <div className="scrap">
@@ -152,4 +152,4 @@ const StoreDetail = () => {
   )
 }
 
-export default StoreDetail
+export default BenefitList
