@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router-dom"
 import profileImage from "../../assets/img/profile2.png"
 import step1 from "../../assets/img/step1.png"
 import step2 from "../../assets/img/step2.png"
 import step3 from "../../assets/img/step3.png"
 
 const ProfileDropdown = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="profiledropdown">
       <div className="myname">
@@ -24,7 +27,12 @@ const ProfileDropdown = () => {
       <div className="cooperation">
         <div className="write">
             <p>게시판 글쓰기</p>
-            <button className="list1">제휴 모집/ 혜택 홍보 글쓰기</button>
+            <button 
+              className="list1"
+              onClick={() => navigate("cooperation/write")}
+            >
+              제휴 모집/ 혜택 홍보 글쓰기
+            </button>
         </div>
         <div className="step_container">
             <p>제휴 맺기</p>
