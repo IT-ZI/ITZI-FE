@@ -158,6 +158,26 @@
         padding-right: 150px;
         padding-bottom: 92.26px;
 
+        .board_head {
+            .subtitle {
+                font-size: 13px;
+                font-weight: 400;
+                font-family: 'Pretendard-Regular';
+                color: #8B8DA8;
+            }
+
+            .title {
+                margin: 0;
+                padding-top: 4.73px;
+                padding-bottom: 25.01px;
+                font-size: 20px;
+                font-style: bold;
+                font-weight: 700;
+                font-family: 'Pretendard-Regular';
+                color: #000;
+            }
+        }
+
         .board_top {
             display: flex;
             justify-content: space-between;
