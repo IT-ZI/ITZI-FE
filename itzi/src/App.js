@@ -3,7 +3,7 @@ import RootLayout from "./layouts/RootLayout"
 import Benefits from "./pages/home/Benefits"
 import Cooperation from "./pages/home/Cooperation"
 import StoreDetail from "./pages/detailpage/StoreDetail"
-import CooperationWrite from "./pages/write/CooperationWrite"
+import CooperationWrite, { BenefitTab, RecruitTab } from "./pages/write/CooperationWrite"
 
 const App = () => {
   return (
@@ -13,7 +13,11 @@ const App = () => {
         <Route path="benefits" element={<Benefits/>}/>
         <Route path="cooperation" element={<Cooperation/>}/>
         <Route path="detail" element={<StoreDetail/>}/>
-        <Route path="cooperation/write" element={<CooperationWrite />} />
+        <Route path="cooperation/write" element={<CooperationWrite />}>
+          <Route index element={<Navigate to="recruit" replace />} />
+          <Route path="recruit" element={<RecruitTab />} />
+          <Route path="benefit" element={<BenefitTab />} />
+        </Route>
       </Route>
     </Routes>
   )
