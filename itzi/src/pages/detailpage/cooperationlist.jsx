@@ -6,6 +6,7 @@ import storeImage from "../../assets/img/ramenstore.png"
 import filledStar from "../../assets/img/star.png"
 import Modal from "./cooperationModal"
 import SendModal from "./sendModal";
+import CheckSendModal from "./checkSendModal"
 import { useState } from "react"
 
 const Cooperationlist = () => {
@@ -18,6 +19,9 @@ const Cooperationlist = () => {
   }
   const openSend = () => {
     setModal("send");
+  }
+  const openCheck = () => {
+    setModal("check");
   }
   const closeAll = () => {
     setModal(null);
@@ -165,7 +169,10 @@ const Cooperationlist = () => {
           <p>문의하기</p>
         </div>
         {modal === "cooperation" && (
-          <Modal onClose={closeAll} onSend={openSend}/>
+          <Modal onClose={closeAll} onSend={openCheck}/>
+        )}
+        {modal === "check" && (
+          <CheckSendModal onClose={closeAll} onSend={openSend}/>
         )}
         {modal === "send" && <SendModal onClose={closeAll}/>}
       </div>
