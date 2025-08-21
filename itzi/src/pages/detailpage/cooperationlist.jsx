@@ -4,8 +4,20 @@ import share from "../../assets/img/share.png"
 import Image from "../../assets/img/shabuimage.png"
 import storeImage from "../../assets/img/ramenstore.png"
 import filledStar from "../../assets/img/star.png"
+import Modal from "./cooperationModal"
+import { useState } from "react"
 
 const Cooperationlist = () => {
+
+  const [isOpen, setIsOpen] = useState(false); 
+
+  const openModal = () => {
+    setIsOpen(true);
+  }
+  const closeModal = () => {
+    setIsOpen(false);
+  }
+
   return (
     <div className="cooperationlist">
       <div className="header">
@@ -143,10 +155,11 @@ const Cooperationlist = () => {
             </div>
           </div>
         </div>
-        <div className="cooperation_button">
+        <div className="cooperation_button" onClick={openModal}>
           <p>제휴</p>
           <p>문의하기</p>
         </div>
+        {isOpen && <Modal onClose={closeModal}/>}
       </div>
     </div>
   )
