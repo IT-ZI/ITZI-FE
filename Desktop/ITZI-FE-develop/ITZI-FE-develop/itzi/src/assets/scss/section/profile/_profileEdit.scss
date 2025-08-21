@@ -1,0 +1,424 @@
+$border-default: #C2C3D9;
+$border-focus:   #434DFD;
+$bg-default:     #FFFFFF;
+$bg-typing:      #EBECFF;
+
+/* ==== 루트 ==== */
+.profile-edit {
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #F6F6FF;
+
+  .title {
+    height: 30px;
+    margin: 160px auto 43px auto;
+    font-family: Pretendard, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 100%;
+    letter-spacing: 0;
+    color: #000000;
+    text-align: center;
+  }
+
+  /* ==== 패널/카드 ==== */
+  .panel {
+    width: 618px;
+    height: auto;
+    border-radius: 25px;
+    border: 1.5px solid #E7E8F2;
+    background: $bg-default;
+    padding: 16px;
+    box-sizing: border-box;
+    margin-bottom: 160px;
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      background: #FFFFFF;
+      border-radius: 22px;
+      padding: 20px 24px;
+      box-sizing: border-box;
+      overflow-y: visible;
+    }
+  }
+
+  /* 카드 내 섹션 폭 고정(피그마 423.746px) */
+  .card > .block,
+  .card > .actions {
+    width: 423.74609375px;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .block + .block { margin-top: 0; }
+
+  .block-title {
+    margin: 0 0 10px;
+    font-family: Pretendard, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 100%;
+    letter-spacing: 0;
+    color: #000000;
+    text-align: left;
+
+    /* ✅ 방법1: block-title 안에서 hint 스타일 적용 */
+    .hint {
+      font-size: 10px;
+      color: #8B8DA8;
+      font-weight: 400;  
+      vertical-align: baseline;
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 23px;
+
+    .span-2 { grid-column: span 1; }
+  }
+
+  /* ==== 공통 필드 ==== */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+
+    .input,
+    .textarea,
+    .select {
+      width: 100%;
+      height: 50px;
+      border: 1px solid $border-default;
+      border-radius: 10px;
+      padding: 15px 20px;
+      background: $bg-default;
+      outline: none;
+      font-size: 17px;
+      font-family: 'Pretendard', sans-serif;
+      font-weight: 400;
+      line-height: 100%;
+      color: #3A3B4D;
+      box-sizing: border-box;          /* ✅ 입력류는 모두 border-box */
+      transition: background .15s ease, border-color .15s ease;
+
+      &::placeholder { color: #8B8DA8; font-size: 17px; }
+      &:focus { border-color: $border-focus; background: $bg-typing; }
+    }
+
+    .is-typing { background: $bg-typing !important; border-color: $border-focus !important; }
+
+    .textarea {
+      height: auto;
+      min-height: 100px;
+      resize: none;
+    }
+
+    /* field 내부에서의 hint (기존 유지) */
+    .hint { font-size: 12px; color: #8B8DA8; &.error { color: #d84a4a; } }
+
+    > .req {
+      color: #434DFD; font-weight: 700; font-size: 17px; line-height: 1;
+      user-select: none; pointer-events: none;
+    }
+
+    &:has(> .req) { flex-direction: row; align-items: center; gap: 6px; }
+    &:has(> .req) .input,
+    &:has(> .req) .textarea,
+    &:has(> .req) .select-field { flex: 1; }
+  }
+
+  .field:has(> .req) .select-field .select-control {
+    width: 100%; padding-left: 20px;
+  }
+
+  .field.inline { flex-direction: row; align-items: center; gap: 6px; }
+  .field.inline .input,
+  .field.inline .textarea,
+  .field.inline .select-field { flex: 1; }
+  .field.inline .select-field .select-control { width: 100%; padding-left: 20px; }
+
+  .tooltip { margin: -4px 0 8px; font-size: 12px; color: #8B8DA8; }
+
+  .actions {
+    margin-top: 20px; display: flex; justify-content: center;
+    .btn-save {
+      width: 100%; height: 48px; border: 1px solid $border-default; border-radius: 10px;
+      background: #CFD2FF; color: #3A3B4D; font-weight: 700; cursor: pointer;
+      &:disabled { opacity: .6; cursor: not-allowed; }
+    }
+  }
+
+  /* ========================= 프로필 사진 ========================= */
+  .profile-photo-block {
+    .block-title { text-align: left; margin-bottom: 12px; }
+    .photo-center { width: 100%; display: flex; justify-content: center; align-items: center; }
+  }
+
+  /* ==== ImageUploader ==== */
+  .image-uploader-wrap {
+    display: inline-block;
+    .avatar {
+      position: relative; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: #fff; border: 1px solid #D9DAEC; overflow: visible;
+    }
+    .avatar-img {
+      width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%;
+      position: relative; z-index: 1; pointer-events: none;
+    }
+    .camera-btn {
+      position: absolute; right: 0; bottom: 0; width: 25px; height: 25px; border-radius: 50%;
+      border: 1px solid #535469; background: #FFFFFF; display: grid; place-items: center;
+      cursor: pointer; z-index: 5;
+      img { transform: translate(-28%, -8%); left: -15px; width: 25px; height: 25px;
+        object-fit: contain; display: block; pointer-events: none; }
+    }
+  }
+
+  /* ==== SelectField ==== */
+  .select-field {
+    position: relative; width: 100%;
+    .select-control {
+      width: 100%; height: 50px; border-radius: 10px; border: 1px solid $border-default;
+      background: $bg-default; padding: 15px 40px 15px 20px; font-size: 17px; cursor: pointer;
+      transition: background .15s ease, border-color .15s ease;
+      display: flex; align-items: center; position: relative; text-align: left;
+      box-sizing: border-box;            /* ✅ border-box */
+
+      &.is-open, &:focus { border-color: $border-focus; background: $bg-typing; }
+
+      .control-text {
+        flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        &.is-placeholder { color: #8B8DA8; }
+      }
+      .toggle-icon {
+        position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+        width: 12px; height: 6px; pointer-events: none;
+      }
+    }
+
+    .options {
+      margin: 6px 0 0; padding: 0; list-style: none;
+      border: 1px solid $border-default; border-radius: 10px; background: #FFFFFF;
+      overflow-y: auto; width: 100%; box-sizing: border-box;
+      .option { list-style: none; padding: 10px 16px; cursor: pointer; &:hover { background: $bg-typing; } }
+    }
+  }
+
+  /* ==== Asterisk Prefix ==== */
+  .input-with-asterisk,
+  .input-with-colored-asterisk {
+    .control { position: relative; }
+    .input { padding-left: 25px; }
+    .select-control { padding-left: 25px; }
+    .asterisk {
+      position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+      font-family: 'Pretendard', sans-serif; font-size: 16px; line-height: 1;
+      pointer-events: none; user-select: none;
+    }
+  }
+  .input-with-asterisk .asterisk { color: #8B8DA8; font-weight: 400; }
+  .input-with-colored-asterisk .asterisk { color: #434DFD; font-weight: 600; }
+
+  /* ==== TagInput (키워드) ==== */
+  .tag-input {
+    width: 100%;
+    box-sizing: border-box;
+
+    /* 상단 입력창 */
+    .top-input {
+      width: 100%;
+      height: 50px;
+      border: 1px solid $border-default;
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: $bg-default;
+      outline: none;
+      font-size: 17px;
+      font-family: 'Pretendard', sans-serif;
+      color: #3A3B4D;
+      transition: background .15s ease, border-color .15s ease;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+
+      &::placeholder { color: #8B8DA8; }
+      &:focus { border-color: $border-focus; background: $bg-typing; }
+    }
+
+    /* 칩 컨테이너 (입력 중에도 색/보더 고정) */
+    .chips {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border: 1px solid $border-default;
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-height: 56px;
+      background: #F6F6FF;           /* 살짝 라이트 톤(스샷 느낌) */
+      transition: none;
+      box-sizing: border-box;
+
+      &.is-typing { background: #F6F6FF; border-color: $border-default; }
+    }
+
+    /* === 칩(버블) === */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;                      /* ✅ 텍스트-아이콘 간격 */
+      padding: 8px 14px;             /* ✅ */
+      height: 34px;                  /* ✅ */
+      background: #FFFFFF;           /* ✅ */
+      border: 1px solid #C2C3D9;     /* ✅ */
+      border-radius: 100px;          /* ✅ */
+      box-sizing: border-box;        /* 가로 계산 안정 */
+    }
+
+    .chip-label {
+      font-size: 14px;
+      color: #3A3B4D;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .chip-del {
+      display: inline-grid;
+      place-items: center;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      opacity: .9;
+      transition: opacity .12s ease;
+
+      img {
+        width: 16px;
+        height: 16px;
+        display: block;
+        object-fit: contain;
+        pointer-events: none;
+      }
+      &:hover { opacity: 1; }
+    }
+
+    /* 칩 박스 내 보조 입력 */
+    .chip-input {
+      flex: 1;
+      min-width: 80px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      padding: 4px 6px;
+      background: transparent;
+      color: #3A3B4D;
+    }
+  }
+
+  /* 글자수 카운터 숨김 */
+  .char-counter { display: none !important; }
+}
+
+.custom-divider {
+  width: 423px;
+  height: 0px;
+  border: 1.5px solid #D9DAEC;
+  opacity: 1;
+  margin-top: 24px;
+}
+
+/* ===== ExploreSection ===== */
+.verify-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+
+  .verify-btn {
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #C2C3D9;
+    background: #EBECFF;
+    color: #3A3B4D;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
+.verify-notes {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 12px;
+  color: #8B8DA8;
+}
+
+.pill-grid {
+  display: grid;
+  grid-template-columns: repeat(3, max-content); /* 칩은 내용만큼, 3열 고정 */
+  column-gap: 10px;   /* 가로 간격 */
+  row-gap: 10px;      /* 세로 간격 */
+  justify-content: space-between; /* 남는 공간 균등 분배 → 길쭉해지지 않음 */
+  align-content: start;
+  width: 100%;
+}
+
+.pill {
+  /* 👉 height 28 / padding 5 15 / 라운드 100 / 보더 #D9DAEC */
+  height: 28px;
+  padding: 5px 15px;
+  border-radius: 100px;
+  border: 1px solid #D9DAEC;
+  background: #FFFFFF;
+
+  /* 텍스트 정렬 안정화 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  font-size: 13px;
+  line-height: 18px; /* 임의, 필요시 14~18 사이 조절 */
+  color: #3A3B4D;
+  cursor: pointer;
+}
+
+/* 선택 상태 */
+.pill.on {
+  background: #EBECFF;
+  border-color: #434DFD;
+  color: #1F26D9;
+}
+
+/* 접근성/상태 보조(선택) */
+.pill:focus-visible {
+  outline: 2px solid #434DFD;
+  outline-offset: 2px;
+}
+.pill.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.interest-box {
+  width: 423px;
+  height: 136px;
+  background: #F6F6FF;
+  border: 1px solid #D9DAEC;
+  border-radius: 10px;
+
+  /* 👉 피그마: top 13 / left 15 */
+  padding: 13px 15px;
+  box-sizing: border-box;
+
+  display: block;
+  align-content: flex-start;
+}
