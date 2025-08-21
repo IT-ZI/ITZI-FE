@@ -1,6 +1,8 @@
 import x from "../../assets/img/x.png"
+import { useState } from "react";
 
-const cooperationModal = ({onClose}) => {
+const cooperationModal = ({onClose, onSend}) => {
+
   return (
     <div className="cooperationModal" onClick={onClose}>
       <div className="box" onClick={(e) => e.stopPropagation()}>
@@ -20,7 +22,7 @@ const cooperationModal = ({onClose}) => {
               </div>
               <div className="content_container2">
                 <h3>우리 단체 정보</h3>
-                <input type="text" placeholder="희망 제휴 시간을 선택 및 작성해주세요"></input>
+                <input type="text" placeholder="우리 단체 기본 정보를 간단히 작성해 주세요."></input>
               </div>
               <div className="content_container3">
                 <h3>문의 내용 상세</h3>
@@ -48,7 +50,7 @@ const cooperationModal = ({onClose}) => {
             </div>
         </div>
         <div className="Button">
-          <div className="sendbutton">
+          <div className="sendbutton" onClick={onSend} >
             보내기
           </div>
         </div>

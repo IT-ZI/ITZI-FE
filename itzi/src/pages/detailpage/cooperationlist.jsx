@@ -5,17 +5,22 @@ import Image from "../../assets/img/shabuimage.png"
 import storeImage from "../../assets/img/ramenstore.png"
 import filledStar from "../../assets/img/star.png"
 import Modal from "./cooperationModal"
+import SendModal from "./sendModal";
 import { useState } from "react"
 
 const Cooperationlist = () => {
 
-  const [isOpen, setIsOpen] = useState(false); 
+  const [modal, setModal] = useState(null);
 
-  const openModal = () => {
-    setIsOpen(true);
+
+  const openCooperation = () => {
+    setModal("cooperation");
   }
-  const closeModal = () => {
-    setIsOpen(false);
+  const openSend = () => {
+    setModal("send");
+  }
+  const closeAll = () => {
+    setModal(null);
   }
 
   return (
@@ -155,11 +160,14 @@ const Cooperationlist = () => {
             </div>
           </div>
         </div>
-        <div className="cooperation_button" onClick={openModal}>
+        <div className="cooperation_button" onClick={openCooperation}>
           <p>제휴</p>
           <p>문의하기</p>
         </div>
-        {isOpen && <Modal onClose={closeModal}/>}
+        {modal === "cooperation" && (
+          <Modal onClose={closeAll} onSend={openSend}/>
+        )}
+        {modal === "send" && <SendModal onClose={closeAll}/>}
       </div>
     </div>
   )
