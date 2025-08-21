@@ -1,4 +1,4 @@
-const CheckSendModal = () => {
+const CheckSendModal = ({onClose, onSend}) => {
   return (
     <div className="checkSendModal">
       <div className="box">
@@ -10,8 +10,8 @@ const CheckSendModal = () => {
             <p>전송 후에는 수정이 불가능합니다.</p>
         </div>
         <div className="bottom">
-            <div className="button1">닫기</div>
-            <div className="button2">전송하기</div>
+            <div className="button1" onClick={onClose}>닫기</div>
+            <div className="button2" onClick={onSend}>전송하기</div>
         </div>
       </div>
     </div>
