@@ -1,0 +1,121 @@
+.nav{
+    width:1440px;
+    position: relative;
+    margin: 0 auto; /* 가운데 정렬 */
+
+    .container{
+        height:51px;
+        display:flex;
+        align-items: center;
+        padding:0 74.27px;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .nav_left{ display:flex; gap:38.4px; }
+    .nav_right{ display:flex; align-items: center; }
+
+    .banner{ display:flex; align-items: center; cursor: pointer; }
+    .banner1{ width:65px; height:61.388px; }
+    .banner2{ width:41.386px; height:23.617px; }
+
+    .button_container{ display:flex; gap:22px; }
+
+    .button_container>.tab{
+        display:flex; align-items: center;
+        background: none; border: none; -webkit-appearance: none; appearance: none;
+        font-size:16px; font-weight:600; cursor:pointer;
+        color:#A5A8C3; text-decoration:none;
+    }
+    /* 활성(검정+진하게) */
+    .button_container>.tab.active{
+        color:#000000;
+        font-weight:800;
+    }
+
+    .button_container>p{ font-size:16px; font-weight:600; color:#3A3B4D; }
+
+    .icon_container{ gap:19.23px; display:flex; align-items: center; }
+    .icon_container>img{ cursor: pointer; }
+
+    /* 알림 배지용 래퍼 */
+    .alarm-btn{
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        background:none; border:0; padding:0;
+    }
+    .alarm-badge{
+        position: absolute;
+        top: -6px; right: -6px;
+        max-width: 16px; height: 14px; padding: 0 4px;
+        border-radius: 999px; background:#C81D25; color:#fff;
+        font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;
+        line-height:1; box-shadow:0 0 0 2px #fff; pointer-events:none;
+    }
+
+    .toggle{ position:absolute; top:45px; z-index: 999; right:60px; }
+    .profile{ width:30.331px; height:31.163px; }
+    .alarm{ width:16.348px; height:20px; }
+
+    /* === 알림 드롭다운 박스 === */
+    .alarm-wrap{
+        position: absolute;
+        top: 44.16px;
+        right: 108px;
+        width: 268px;
+        padding: 10px;
+        background: #FFFFFF;
+        border: 1px solid #D9DAEC;
+        border-radius: 10px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 16px 44px rgba(28,35,89,.12), 0 2px 8px rgba(28,35,89,.06);
+    }
+
+    .alarm-card{
+        display:flex; align-items:center; justify-content: space-between;
+        height: 46px; padding: 0 14px 0 16px;
+        background:#F8F7FF; border:1.5px solid #D9DAEC; border-radius: 12px;
+        color:#3A3B4D; font-size:14px; font-weight:600;
+
+        .txt{ white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chev{ margin-left: 12px; }
+    }
+}
+
+/* 클릭 가능한 버튼 */
+.alarm-btn,
+.profile-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alarm-wrap .alarm-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.alarm-wrap .chev-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 8px;
+  background: #eef0ff;
+  color: #3d4cff;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.alarm-wrap .chev-btn:hover { filter: brightness(0.95); }

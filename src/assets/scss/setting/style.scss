@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+@use "../section/common/main";
+
+// section 
+@use "../section/common/nav";
+@use "../section/common/footer";
+@use "../../scss/section/common/profiledropdown";
+@use "../section/profile/profileEdit";
