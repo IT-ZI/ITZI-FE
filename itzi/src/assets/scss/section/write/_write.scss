@@ -1,4 +1,4 @@
-.Write_wrap {
+.Writehome_wrap {
     display: flex;
     background-color: #F6F6FF;
     padding-top: 34.32px;
@@ -241,7 +241,8 @@
             /* 배경(연보라 회색) */
             display: inline-flex;
             align-items: center;
-            justify-content: center; /* 가운데 정렬 */
+            justify-content: center;
+            /* 가운데 정렬 */
             gap: 14px;
             font-weight: 500;
             font-size: 13px;
@@ -252,14 +253,16 @@
         }
 
         .seg_toggle .opt {
-            flex: 1 0 0; 
+            flex: 1 0 0;
             text-align: center;
             pointer-events: none;
             color: #D9DAEC;
             /* 기본은 연한 회색 */
             transition: color .2s ease, opacity .2s ease;
-            position: relative;   /* 기준 설정 */
-            z-index: 2;           /* knob보다 위 */
+            position: relative;
+            /* 기준 설정 */
+            z-index: 2;
+            /* knob보다 위 */
             padding: 0 0 0 2px;
         }
 
@@ -280,7 +283,8 @@
             border-radius: 50%;
             background: #F6F6FF;
             transition: transform .2s ease;
-            z-index: 1;           /* 글자보다 아래 */
+            z-index: 1;
+            /* 글자보다 아래 */
         }
 
         /* on일 때 오른쪽으로 이동 */
@@ -308,6 +312,19 @@
         border: 1.5px solid #D9DAEC;
         background-color: #fff;
         padding: 19px 23.53px;
+    }
+
+    .empty_message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        height: 100%;
+        font-size: 15px;
+        font-weight: 400;
+        font-family: 'Pretendard-Regular';
+        color: #A5A8C3;
+        line-height: 1.6;
     }
 
     .grid {
@@ -456,4 +473,12 @@
             }
         }
     }
+}
+
+.Write_wrap {
+    display: flex;
+    background-color: #F6F6FF;
+    padding-top: 25.11px;
+    padding-left: 150.18px;
+    
 }

@@ -67,6 +67,15 @@ const CardGrid = ({ initial }) => {
         );
     };
 
+    if (posts.length === 0) {
+        return (
+            <div className="empty_message">
+                아직 작성한 홍보 게시글이 없습니다.<br />
+                제휴 외에도 자체 혜택과 이벤트를 자유롭게 홍보해 보세요!
+            </div>
+        );
+    }
+
     return (
         <div className="category_content">
             <div className="grid">
@@ -183,7 +192,7 @@ const CooperationWrite = () => {
     const [requestable, setRequestable] = useState(true);
 
     return (
-        <div className='Write_wrap'>
+        <div className='Writehome_wrap'>
             <aside className='profile'>
                 <div className="myname">
                     <div className="myname_img">
