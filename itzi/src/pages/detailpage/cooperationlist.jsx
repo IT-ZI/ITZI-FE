@@ -1,8 +1,6 @@
 import prior from "../../assets/img/priorbutton.png"
 import colorScrab from "../../assets/img/colorscrab.png"
 import share from "../../assets/img/share.png"
-import Image from "../../assets/img/shabuimage.png"
-import storeImage from "../../assets/img/ramenstore.png"
 import filledStar from "../../assets/img/star.png"
 import Modal from "./cooperationModal"
 import SendModal from "./sendModal";
@@ -20,7 +18,6 @@ const Cooperationlist = () => {
     axios.get(`https://api.onlyoneprivate.store/recruiting/${postId}`).then((res) => {
       console.log("res : ", res);
       console.log("res.data : ", res.data);
-      console.log("res.data.result.content : ", res.data.result.content);
       setData(res.data);
     })
     .catch((err) => {
@@ -29,6 +26,10 @@ const Cooperationlist = () => {
   }
   
   const postId = 33;
+
+  const keywords = data?.result?.author?.keywords ?? [];
+
+  console.log(keywords);
   
 
   useEffect(() => {
@@ -59,23 +60,23 @@ const Cooperationlist = () => {
           <div className="inner_header">
             <div className="inner_header_left">
               <div className="day">D-18 제휴 모집 중</div>
-              <div className="category">음식점/카페</div>
+              <div className="category">{data?.result?.author?.category}</div>
             </div>
             <div className="inner_header_right">
-              <p className="count">29</p>
+              <p className="count">{data?.result?.bookmarkCount}</p>
               <img className = "colorscrab" src={colorScrab} alt="" />
               <img className="share" src={share} alt="" />
             </div>
           </div>
           <div className="title">
-            <h3>샤브온당 제휴 모집 - 편하게 문의해주세요!</h3>
+            <h3>{data?.result?.title}</h3>
           </div>
           <div className="box1">
             <div className="box1_left">
               <div className="line">
                 <p className="title">대상</p>
                 <p>|</p>
-                <p>성신여대 제적생 및 교직원 대상</p>
+                <p>{data?.result?.target}</p>
               </div>
               <div className="line">
                 <p className="title">기간</p>
@@ -85,16 +86,16 @@ const Cooperationlist = () => {
               <div className="line">
                 <p className="title">혜택</p>
                 <p>|</p>
-                <p>매장 식사 시, 음료 1인당 1캔 무료 제공</p>
+                <p>{data?.result?.benefit}</p>
               </div>
               <div className="line">
                 <p className="title">조건</p>
                 <p>|</p>
-                <p>성신여대 학생증 및 교직원증, 증명서 제시</p>
+                <p>{data?.result?.condition}</p>
               </div>
             </div>
             <div className="box1_right">
-              <img src={Image} alt="" />
+              <img src={data?.result?.postImageUrl} alt="" />
             </div>
           </div>
           <div className="detail">
@@ -109,7 +110,7 @@ const Cooperationlist = () => {
               <div className="box2_left">
                 <div className="top">
                   <div className="top_left">
-                    <img className="storeImage" src={storeImage} alt="" />
+                    <img className="storeImage" src={data?.result?.author?.image} alt="" />
                   </div>
                   <div className="top_right">
                     <div className="star">
@@ -119,18 +120,20 @@ const Cooperationlist = () => {
                       <img src={filledStar} alt="" />
                       <img src={filledStar} alt="" />
                     </div>
-                    <div className="store_name">라라면가</div>
+                    <div className="store_name">{data?.result?.author?.name}</div>
                   </div>
                 </div>
                 <div className="center">
-                  <p>생방송투데이 출연<br/>성북구 성신여대 맛집 라라면가 입니다.</p>
+                  <p>{data?.result?.author?.info}</p>
                 </div>
                 <div className="bottom">
-                  <div className="tag">성신여대 맛집</div>
-                  <div className="tag">면요리</div>
-                  <div className="tag">중화풍요리</div>
-                  <div className="tag">우육탕면</div>
-                  <div className="tag">꿔바로우</div>
+                  {keywords.length>0? (
+                    keywords.map((kw,i) => (
+                      <div className="tag" key={`${kw}-${i}`}>{kw}</div>
+                    ))
+                  ) : (
+                    <div className="tag">키워드 없음</div>
+                  )}
                 </div>
               </div>
               <div className="box2_center">
@@ -142,42 +145,42 @@ const Cooperationlist = () => {
                     <p>업종</p>
                     <p>|</p>
                   </div>
-                  <p>음식점 / 카페</p>
+                  <p>{data?.result?.author?.category}</p>
                 </div>
                 <div className="line">
                   <div className="line_title">
                     <p>운영시간</p>
                     <p>|</p>
                   </div>
-                  <p>매일 11:30 - 21:00 / 브레이크 타임 16:00 -17:00</p>
+                  <p>{data?.result?.author?.operatingHours}</p>
                 </div>
                 <div className="line">
                   <div className="line_title">
                     <p>전화번호</p>
                     <p>|</p>
                   </div>
-                  <p>0507-1309-4851</p>
+                  <p>{data?.result?.author?.phone}</p>
                 </div>
                 <div className="line">
                   <div className="line_title">
                     <p>주소</p>
                     <p>|</p>
                   </div>
-                  <p>서울 성북구 동소문로22길 57-25 1층</p>
+                  <p>{data?.result?.author?.address}</p>
                 </div>
                 <div className="line">
                   <div className="line_title">
                     <p>대표자명</p>
                     <p>|</p>
                   </div>
-                  <p>최중면</p>
+                  <p>{data?.result?.author?.ownerName}</p>
                 </div>
                 <div className="line">
                   <div className="line_title">
                     <p>링크</p>
                     <p>|</p>
                   </div>
-                  <p>https://blog.naver.com/ns9277</p>
+                  <p>{data?.result?.author?.linkUrl}</p>
                 </div>
 
               </div>

@@ -1,7 +1,7 @@
 .cooperationlist{
     background-color:#D9DAEC;
     height:1419px;
-    padding:23.78px 0 128px 150px;
+    padding:23.78px 20px 128px 120px;
 
     .cooperation_button{
         width: 82.391px;
@@ -27,7 +27,7 @@
     }
 
     .container{
-        max-width:1009px;
+        max-width:1090px;
         background-color: white;
         border-radius: 14.741px;
         padding:36px 35px 0 35px;
@@ -181,6 +181,9 @@
         }
         .content{
             white-space: pre-line;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
         }
     }
     .box2{
