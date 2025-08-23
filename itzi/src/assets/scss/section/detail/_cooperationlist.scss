@@ -27,8 +27,7 @@
     }
 
     .container{
-        max-width:1140px;
-        height:1226px;
+        max-width:1009px;
         background-color: white;
         border-radius: 14.741px;
         padding:36px 35px 0 35px;
@@ -179,6 +178,9 @@
             font-size: 22px;
             font-style: normal;
             font-weight: 700;
+        }
+        .content{
+            white-space: pre-line;
         }
     }
     .box2{

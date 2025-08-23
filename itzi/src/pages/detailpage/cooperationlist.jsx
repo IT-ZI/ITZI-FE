@@ -7,11 +7,33 @@ import filledStar from "../../assets/img/star.png"
 import Modal from "./cooperationModal"
 import SendModal from "./sendModal";
 import CheckSendModal from "./checkSendModal"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 
 const Cooperationlist = () => {
 
   const [modal, setModal] = useState(null);
+  const [data, setData] = useState(null);
+
+  // API 호출 함수 
+  const callApi = () => {
+    axios.get(`https://api.onlyoneprivate.store/recruiting/${postId}`).then((res) => {
+      console.log("res : ", res);
+      console.log("res.data : ", res.data);
+      console.log("res.data.result.content : ", res.data.result.content);
+      setData(res.data);
+    })
+    .catch((err) => {
+      console.log("에러:", err);
+    })
+  }
+  
+  const postId = 33;
+  
+
+  useEffect(() => {
+    callApi();
+  },[postId]);
 
 
   const openCooperation = () => {
@@ -78,12 +100,10 @@ const Cooperationlist = () => {
           <div className="detail">
             <h3>상세 내용</h3>
             <div className="content">
-              [성신여대 X 라라면가 상권 제휴] <br/><br/>
-              안녕하세요, 성신여대 제37대 총학생회입니다.<br/>
-              이번에는 라라면가와 함께 성신여대 재적생 및 교직원분들을 위한 특별 제휴를 진행합니다.
+              {data?.result?.content}
             </div>
           </div>
-          <div className="box2">
+          <div className="box2">  
             <h3>정보</h3>
             <div className="shop_detailbox">
               <div className="box2_left">
