@@ -30,20 +30,31 @@ const getThumb = (name) => {
 
 /** 숫자 필드 추출(여러 네이밍 케이스 허용) */
 const getCount = (b) => {
-  const v = b?.scrapCount ?? b?.scrap_count ?? b?.scrab_count ?? b?.likes ?? b?.like ?? 0;
+  const v =
+    b?.scrapCount ??
+    b?.scrap_count ??
+    b?.scrab_count ??
+    b?.likes ??
+    b?.like ??
+    0;
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;
 };
 
 /** boolean 필드 추출(여러 네이밍 케이스 허용) */
-const getScrapped = (b) => Boolean(b?.scrapped ?? b?.scrap_done ?? b?.scrab_done);
+const getScrapped = (b) =>
+  Boolean(b?.scrapped ?? b?.scrap_done ?? b?.scrab_done);
 
 /** 저장소 갱신 유틸: localStorage / sessionStorage 동시 반영 */
 function persistToggle(id, makeScrapped) {
   const apply = (raw) => {
     if (!raw) return raw;
     let arr;
-    try { arr = JSON.parse(raw); } catch { return raw; }
+    try {
+      arr = JSON.parse(raw);
+    } catch {
+      return raw;
+    }
     if (!Array.isArray(arr)) return raw;
 
     const next = arr.map((it) => {
@@ -83,14 +94,7 @@ function persistToggle(id, makeScrapped) {
  * BenefitGrid
  * - readOnly=false일 때 스크랩 토글 가능
  * - onToggleScrap(id) 를 부모에서 넘기면 호출(선택)
- * - 내부적으로도 storage 갱신 + 커스텀 이벤트 발행 → select 스크랩 탭과 연동
- *
- * 📌 Select 스크랩 탭 연동 예시:
- *   useEffect(() => {
- *     const onChange = () => forceReloadFromStorage(); // or setState(...)
- *     window.addEventListener("benefit:scrap-changed", onChange);
- *     return () => window.removeEventListener("benefit:scrap-changed", onChange);
- *   }, []);
+ * - storage 갱신 + 커스텀 이벤트 발행 → select 스크랩 탭과 연동
  */
 export default function BenefitGrid({
   items = [],
@@ -123,7 +127,6 @@ export default function BenefitGrid({
 
   const toggle = (id) => {
     if (readOnly) return;
-    // 현재 상태 계산
     const cur = list.find((x) => x.id === id);
     if (!cur) return;
     const nextOn = !cur.on;
@@ -132,11 +135,13 @@ export default function BenefitGrid({
     // 1) 즉시 UI 반영
     setOverrides((m) => ({ ...m, [id]: { on: nextOn, count: nextCount } }));
 
-    // 2) storage 갱신 (benefits)
+    // 2) storage 갱신
     persistToggle(id, nextOn);
 
-    // 3) 외부 콜백 통지(있으면)
-    try { onToggleScrap(id); } catch {}
+    // 3) 외부 콜백(옵션)
+    try {
+      onToggleScrap(id);
+    } catch {}
 
     // 4) select 스크랩 탭 등에 알림
     try {
@@ -156,37 +161,44 @@ export default function BenefitGrid({
         <div className="progress-panel">
           <div className="progress-grid">
             {list.map((b) => (
-              <article key={b.id} className="benefit-card">
-                <div className="thumb">
-                  <img src={b.thumb} alt={b.title} loading="lazy" />
-                </div>
+              <article
+                key={b.id}
+                className="benefit-card"
+                style={{ background: "#fff", borderRadius: 14, overflow: "hidden" }}
+              >
+                {/* 썸네일 + 스크랩 뱃지(겹치기) */}
+                <div className="thumb" style={{ position: "relative" }}>
+                  <img
+                    src={b.thumb}
+                    alt={b.title}
+                    loading="lazy"
+                    style={{ display: "block", width: "100%", height: "auto" }}
+                  />
 
-                {/* 본문(뱃지 기준 컨테이너) */}
-                <div className="body" style={{ position: "relative" }}>
-                  {/* ✅ 우상단 스크랩 뱃지 */}
+                  {/* ✅ 이미지 우상단에 항상 보이는 스크랩 뱃지 */}
                   <div
                     className="scrap-badge"
                     role="group"
                     aria-label="스크랩"
                     style={{
                       position: "absolute",
-                      top: 6,
+                      top: 96,
                       right: 8,
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 6,
-                      zIndex: 99,
-                      visibility: "visible",
-                      opacity: 1,
+                      zIndex: 5,
                     }}
                   >
                     <span
                       className={`scrap-count ${b.on ? "on" : ""}`}
                       style={{
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: 700,
                         lineHeight: 1,
                         color: b.on ? "#1FC37D" : "#5CCB9A",
+                        minWidth: 10,
+                        textAlign: "right",
                       }}
                     >
                       {b.count}
@@ -202,11 +214,9 @@ export default function BenefitGrid({
                       aria-label={b.on ? "스크랩 해제" : "스크랩"}
                       title={readOnly ? "읽기 전용" : ""}
                       style={{
-                        width: 20,
-                        height: 20,
-                        border: 0,
-                        background: "transparent",
-                        padding: 0,
+                        width: 10.67,
+                        height: 13.72,
+
                         cursor: readOnly ? "default" : "pointer",
                         display: "inline-flex",
                         alignItems: "center",
@@ -216,36 +226,48 @@ export default function BenefitGrid({
                       <img
                         src={b.on ? scrabDone : scrab}
                         alt=""
-                        style={{ width: 16, height: 16, display: "block" }}
+                        style={{ width: 10.67, height: 13.72, display: "block" }}
                       />
                     </button>
                   </div>
+                </div>
 
-                  <div className="title-row">
-                    <h4 className="title" title={b.title}>
+                {/* 본문 */}
+                <div className="body" style={{ padding: "10px 12px 14px" }}>
+                  <div className="title-row" style={{ marginBottom: 6 }}>
+                    <h4
+                      className="title"
+                      title={b.title}
+                      style={{
+                        margin: 0,
+                        fontSize: 11.19,
+                        fontWeight: 700,
+                        color: "#000000",
+                      }}
+                    >
                       {b.title}
                     </h4>
                   </div>
 
-                  <ul className="meta">
-                    <li>
+                  <ul className="meta" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                    <li style={{ display: "flex", gap: 6, fontSize: 8.96, color: "#000000" }}>
                       <span className="label">대상</span>
                       <span className="sep">ㅣ</span>
-                      <span className="value" title={b.target}>
+                      <span className="value" title={b.target} style={{ color: "#000000" }}>
                         {b.target}
                       </span>
                     </li>
-                    <li>
+                    <li style={{ display: "flex", gap: 6, fontSize: 8.96, color: "#000000" }}>
                       <span className="label">기간</span>
                       <span className="sep">ㅣ</span>
-                      <span className="value">
+                      <span className="value" style={{ color: "#000000" }}>
                         {b.startDate} ~ {b.endDate}
                       </span>
                     </li>
-                    <li>
+                    <li style={{ display: "flex", gap: 6, fontSize: 8.96, color: "#000000" }}>
                       <span className="label">혜택</span>
                       <span className="sep">ㅣ</span>
-                      <span className="value" title={b.benefit}>
+                      <span className="value" title={b.benefit} style={{ color: "#000000" }}>
                         {b.benefit}
                       </span>
                     </li>
