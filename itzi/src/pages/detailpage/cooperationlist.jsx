@@ -2,6 +2,7 @@ import prior from "../../assets/img/priorbutton.png"
 import colorScrab from "../../assets/img/colorscrab.png"
 import share from "../../assets/img/share.png"
 import filledStar from "../../assets/img/star.png"
+import emptyStar from "../../assets/img/emptystar.png"
 import Modal from "./cooperationModal"
 import SendModal from "./sendModal";
 import CheckSendModal from "./checkSendModal"
@@ -28,6 +29,8 @@ const Cooperationlist = () => {
   const postId = 33;
 
   const keywords = data?.result?.author?.keywords ?? [];
+  const rating = Math.max(0, Math.min(Number(data?.result?.author?.rating ?? 0), 5));
+  const filledCount = Math.floor(rating);
 
   console.log(keywords);
   
@@ -114,11 +117,13 @@ const Cooperationlist = () => {
                   </div>
                   <div className="top_right">
                     <div className="star">
-                      <img src={filledStar} alt="" />
-                      <img src={filledStar} alt="" />
-                      <img src={filledStar} alt="" />
-                      <img src={filledStar} alt="" />
-                      <img src={filledStar} alt="" />
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <img
+                            key={i}
+                            src={i < filledCount ? filledStar : emptyStar}
+                            alt={i < filledCount ? "별 채움" : "별 비움"}
+                          />
+                        ))}
                     </div>
                     <div className="store_name">{data?.result?.author?.name}</div>
                   </div>
