@@ -273,7 +273,7 @@ const CooperationWrite = () => {
 
                         <button
                             className="write_btn"
-                            onClick={() => navigate('/cooperation/write/recruit')}
+                            onClick={() => navigate('/cooperation/write/new')}
                         >
                             + 제휴 모집 글쓰기
                         </button>
