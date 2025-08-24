@@ -160,11 +160,36 @@
 
                     .ai_keyword_box{
                         margin-top:5px;
-                        width: 423px;
-                        height: 105.465px;
+                        width: 403px;
+                        height: 85.465px;
                         border-radius: 10px;
                         border:1px solid #D9DAEC;
                         background-color: #F6F6FF;
+                        display:flex;
+                        gap:10px;
+                        flex-wrap: wrap;
+                        padding:10px;
+
+                        span{
+                            width: auto;
+                            height:34px;
+                            background-color: white;
+                            border:1px solid #C2C3D9;
+                            border-radius: 100px;
+                            font-size: 15px;
+                            font-style: normal;
+                            font-weight: 500;
+                            color:#535469;
+                            padding: 0 14px;
+                            display:flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap:5px;
+                        }
+                        .chip-x{
+                            width:16px;
+                            height:16px;
+                        }
                     }
                 }
 
