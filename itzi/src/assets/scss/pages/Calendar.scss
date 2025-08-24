@@ -1,0 +1,138 @@
+.cal-wrap { 
+    width: 456px; 
+  }
+  
+  .cal-title {
+    margin: 0 0 8px 4px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #3A3B4D;
+  }
+  
+  .calendar.cal-compact {
+    /* 📌 크기 고정 */
+    --box-w: 456px;
+    --box-h: 370px;
+    --pad: 10px;
+  
+    --head-h: 40px;
+    --head-gap: 6px;
+  
+    --dow-h: 24px;    
+    --date-h: 18px;   
+    --bar-gap: 2px;
+    --level-gap: 12px;
+  
+    width: var(--box-w);
+    height: var(--box-h);
+    position: relative;
+    border-radius: 15px;         /* 둥근 모서리 */
+    border: 1.5px solid #D9DAEC; /* 테두리 두께 */
+    background: #fff;
+    padding: var(--pad);
+  
+    /* ===== Header ===== */
+    .cal-head {
+      position: relative;
+      display:flex; align-items:center; justify-content:center; gap: 13px;
+      height: var(--head-h); margin-bottom: var(--head-gap);
+  
+      .month { font-weight:700; font-size:13px; color:#3A3B4D; }
+      .nav { all:unset; cursor:pointer; display: inline-flex; align-items: center; justify-content: center; }
+      .nav.prev { left: 4px; }
+      .nav.next { right: 4px; }
+      .nav img { display:block; width: 3.953125px; height:7.90625px; }
+    }
+  
+    .cal-body {
+      position:relative;
+      height: calc(var(--box-h) - var(--pad)*2 - var(--head-h) - var(--head-gap));
+    }
+  
+    /* ===== Grid ===== */
+    .cal-grid {
+      table-layout:fixed; width:100%; height:100%;
+      border-collapse: collapse;
+      position: relative;
+      z-index: 1;
+  
+  .cal-grid .d {
+    position: relative;
+    z-index: 3;  /* 날짜 숫자는 가장 위 */
+  }
+  
+  .cal-bars {
+    z-index: 2;  /* 바를 그리드보다 위로 올림 */
+  }
+  
+      thead th, tbody td {
+        border: 1px solid #E7E8F2;
+      }
+  
+      thead th {
+        height: var(--dow-h);
+        background: #D1D3FF;
+        border-bottom: 1px solid #A5A8C3;
+        font-size: 12px; color:#3A3B4D;
+        text-align:center;
+      }
+  
+      tbody td {
+        vertical-align: top;
+        padding: 4px 6px 0;
+        height: calc((100% - var(--dow-h)) / 6);
+      }
+  
+      .d {
+        display: block;
+        height: var(--date-h);
+        line-height: var(--date-h);
+        margin: 0;
+        font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+        font-weight: 500;
+        font-size: 8px;
+        letter-spacing: 0;
+        text-align: right;
+        color:#3A3B4D;
+        position: relative;
+        z-index: 3;
+      }
+  
+      td.today { background:#F7F7FD; position:relative; }
+      td.today .d::after {
+        content:""; display:block; width:6px; height:6px; border-radius:50%;
+        margin:2px 0 0 auto;
+        background:#434DFD;
+      }
+  
+      td.dim .d { opacity:.35; }
+    }
+  
+    /* ===== Bars ===== */
+    .cal-bars {
+      position:absolute; inset:0; pointer-events:none;
+      z-index: 1;
+    }
+  
+    .cal-bar {
+      position:absolute; height:10px; border-radius:20px;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:auto; box-shadow:0 1px 0 rgba(0,0,0,.05); overflow:hidden;
+  
+      .label { display:none; }
+  
+      &.head .label {
+        display:block;
+        font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+        font-weight: 500;
+        font-size: 8px;
+        line-height: 100%;
+        text-align: center;
+        color:#fff;
+        height:10px; padding:0 8px;
+        white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        width:100%;
+        pointer-events:none;
+      }
+    }
+  }

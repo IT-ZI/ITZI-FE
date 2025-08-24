@@ -1,0 +1,303 @@
+/* =========================
+   popup.scss (최종 전체본)
+   - 공통 프레임/백드롭
+   - 카드 공통/헤더
+   - 샤브온당 고정 레이아웃(1026×909)
+   - PartnerStartModal(358×255, 화면 중앙)
+   - 받은문의: 카페구월 팝업(538×792, 중앙)
+   - (옵션) 알림 드롭다운 스타일
+   ========================= */
+
+/* ===== 프레임/백드롭 ===== */
+.popup-frame {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    pointer-events: none; /* 카드/백드롭만 클릭되게 */
+  }
+  .popup-backdrop {
+    position: absolute;
+    inset: 0;
+    background: #000000a6; /* 요구 스펙 */
+    pointer-events: auto;
+  }
+  
+  /* ===== 카드 공통 ===== */
+  .popup-card {
+    pointer-events: auto;
+    background: #fff;
+    border: 1.5px solid #d9daec;
+    border-radius: 15px;
+    box-shadow: 0 16px 44px rgba(28, 35, 89, 0.18), 0 2px 8px rgba(28, 35, 89, 0.08);
+    overflow: hidden;
+  }
+  
+  /* ===== 헤더 ===== */
+  .popup-header {
+    position: relative;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #D9DAEC;
+    background: #ffffff;
+  
+    h4 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 22px;
+      color: #21212C;
+    }
+  
+    .btn-x {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      border: 1px solid #d9daec;
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 20px;
+      color: #6b6c84;
+      cursor: pointer;
+  
+      &:hover { background: #f4f5ff; }
+    }
+  }
+  
+  /* =========================
+     샤브온당 고정 레이아웃
+     카드: 1026×909, 좌/우 513
+     ========================= */
+  .popup--shabu-fixed {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1026px; height: 909px;
+    display: flex; flex-direction: column;
+    border: 1.5px solid #d9daec; border-radius: 15px; background: #fff;
+    box-shadow: 0 16px 44px rgba(28, 35, 89, 0.18), 0 2px 8px rgba(28, 35, 89, 0.08);
+  }
+  
+  /* ✅ 팝업 내부는 전부 border-box */
+  .popup--shabu-fixed,
+  .popup--shabu-fixed * { box-sizing: border-box; }
+  
+  /* 바디 (좌/우 513px, 내부 스크롤) */
+  .popup--shabu-fixed .popup-body {
+    position: relative;
+    flex: 1 1 auto; min-height: 0;
+    display: grid; grid-template-columns: 513px 513px;
+    padding: 42px 0 0 0; column-gap: 0;
+    background: transparent;
+    overflow: hidden;   /* 카드 크기 유지 */
+    overflow-x: hidden; /* 가로 스크롤 숨김 */
+  }
+  
+  /* 중앙 세로선 */
+  .popup--shabu-fixed .v-sep {
+    position: absolute; top: 42px; bottom: 88px; left: 513px;
+    width: 1px; background: #d9daec;
+  }
+  
+  /* 좌/우 패딩 */
+  .popup--shabu-fixed .side.left { padding: 0 30px 0 50px; }
+  .popup--shabu-fixed .side.right { padding: 0 30px 0 50px; }
+  
+  /* 좌측 입력 카드 (세로 스크롤) */
+  .popup--shabu-fixed .section-card {
+    width: 423px; height: 640px;
+    background: #ffffff; border-radius: 12px; padding: 0;
+    overflow-y: auto; overflow-x: hidden;
+  }
+  
+  /* 인풋 공통 */
+  .popup--shabu-fixed .input {
+    height: 50px; background: #ffffff; border: 1px solid #c2c3d9; border-radius: 10px;
+    padding: 15px 22px 15px 20px; display: flex; align-items: center;
+    color: #3a3b4d; font-size: 13px;
+  }
+  .popup--shabu-fixed .textarea {
+    min-height: 130px; resize: vertical; background: #ffffff; border: 1px solid #c2c3d9; border-radius: 10px;
+    padding: 15px 10px 15px 20px; font-size: 13px; color: #3a3b4d; line-height: 1.3;
+  }
+  .popup--shabu-fixed .field { margin-bottom: 18px; }
+  .popup--shabu-fixed .field > label {
+    display: block; margin: 0 0 8px 2px; font-weight: 600; font-size: 16px; line-height: 22px; color: #3a3b4d;
+  }
+  
+  /* 래퍼/리스트/필드 폭 100% (최대 423) */
+  .popup--shabu-fixed .input,
+  .popup--shabu-fixed .textarea,
+  .popup--shabu-fixed .kw-block,
+  .popup--shabu-fixed .kw-holder,
+  .popup--shabu-fixed .kw-list,
+  .popup--shabu-fixed .field { width: 100%; max-width: 423px; }
+  
+  /* ───────── 키워드 블록 ───────── */
+  .popup--shabu-fixed .kw-block { width: 423px; }
+  .popup--shabu-fixed .block-title { margin: 8px 0 6px; font-size: 16px; font-weight: 600; color: #000; }
+  .popup--shabu-fixed .tooltip { align-items: center; margin: 0 0 10px; font-size: 10px; color: #8b8da8; }
+  
+  /* 키워드 홀더/리스트 */
+  .popup--shabu-fixed .kw-holder,
+  .popup--shabu-fixed .kw-list {
+    width: 423px; height: 105.46484375px; border: 1px solid #c2c3d9; border-radius: 10px;
+    background: #ffffff; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px;
+    overflow: auto; overflow-x: hidden;
+  }
+  
+  /* 칩 */
+  .popup--shabu-fixed .kw-holder .pill,
+  .popup--shabu-fixed .kw-list .pill {
+    height: 28px; padding: 5px 12px; border: 1px solid #d9daec; border-radius: 100px;
+    background: #ffffff; font-size: 12px; color: #3a3b4d; display: inline-flex; align-items: center;
+  }
+  
+  /* ───────── 우측 AI 영역 ───────── */
+  .popup--shabu-fixed .ai-box {
+    width: 423px; display: flex; flex-direction: column; margin-right: 0;
+    background: transparent; border: 0; border-radius: 0;
+  }
+  .popup--shabu-fixed .ai-title {
+    height: 19px; display: flex; align-items: center; padding: 0 0 0 4px;
+    font-size: 13px; font-weight: 700; color: #3a3b4d; margin-bottom: 8px; background: transparent; border: 0;
+  }
+  .popup--shabu-fixed .ai-content {
+    width: 423px; height: 600px; padding: 15px 10px 15px 20px;
+    border: 1px solid #c2c3d9; border-radius: 10px; background: #f6f6ff;
+    color: #3a3b4d; font-size: 13px; line-height: 1.65; overflow: auto; white-space: pre-wrap;
+  }
+  
+  /* 풋터 */
+  .popup--shabu-fixed .popup-footer {
+    padding: 16px 0 22px;
+    display: flex; flex-direction: column; align-items: center; gap: 11.34px; background: #ffffff;
+  }
+  .popup--shabu-fixed .popup-footer .btn.primary {
+    width: 423px; height: 54px; background: #c2c3d9; border: 1px solid #8b8da8; color: #fff; border-radius: 10px; cursor: default;
+  }
+  .popup--shabu-fixed .popup-footer .foot-note {
+    width: 297px; text-align: center; font-size: 10px; line-height: 1; color: #8b8da8; margin: 0;
+  }
+  
+  /* ===================================
+     PartnerStartModal (작은 확인 모달)
+     358×255, 화면 정중앙
+     =================================== */
+  .popup-card.partner-start {
+    position: absolute;
+    width: 358px; height: 255px;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    background: #ffffff; border: 1.5px solid #d9daec; border-radius: 15px;
+    display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;
+  }
+  
+  /* 헤더(제목) */
+  .popup-card.partner-start .popup-header {
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px 16px 0;
+  }
+  .popup-card.partner-start .popup-header h4 {
+    margin: 0;
+    font-family: Pretendard, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans KR", sans-serif;
+    font-weight: 600; font-size: 22px; line-height: 100%; text-align: center; color: #21212c;
+  }
+  
+  /* ✅ 구분선 정리: 제목 아래 1개만 사용 */
+  .popup-card.partner-start .hr { display: none; }
+  
+  /* 본문 */
+  .popup-card.partner-start .popup-body { padding: 16px 18px 0; text-align: center; }
+  .popup-card.partner-start .popup-body .notice { margin: 12px 0 0; font-size: 14px; line-height: 100%; color: #21212c; }
+  .popup-card.partner-start .popup-body .notice.strong { font-weight: 600; font-size: 17px;}
+  .popup-card.partner-start .popup-body .question {
+    margin: 18px 0 0; font-family: Pretendard, inherit; font-weight: 400; font-size: 13px; line-height: 100%; letter-spacing: 0; text-align: center;
+  }
+  /* 푸터 버튼 */
+  .popup-card.partner-start .popup-footer {
+    margin-top: auto; padding: 18px 20px 20px; display: flex; gap: 16px; justify-content: center;
+  }
+  .btn { min-width: 120px; height: 40px; border-radius: 10px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .btn-ghost { background: #e6e7f3; color: #2b2b2b; }
+  .btn-primary { background: #3d4cff; color: #fff; }
+  .btn:active { transform: translateY(1px); }
+  
+  /* ===================================
+     받은 문의: 카페구월 팝업 (538×792, 중앙)
+     — 내부 요소 전체를 위로 12px 당김
+     =================================== */
+  .cafe-modal {
+    position: absolute;
+    width: 538px; height: 792px;
+    border-radius: 15px; border: 1.5px solid #D9DAEC; background: #FFFFFF;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  
+  .cafe-modal .popup-header { /* 공통 헤더 재사용 */
+    position: relative; height: 56px; display: flex; align-items: center; justify-content: center;
+    border-bottom: 1px solid #E7E8F2; background: #FFFFFF;
+    h4 { margin: 0; font-weight: 700; font-size: 18px; color: #1C2359; }
+    .btn-x {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      width: 28px; height: 28px; border: 0; background: transparent; cursor: pointer;
+      img { display: block; width: 20px; height: 20px; }
+    }
+  }
+  
+  .cafe-modal__body { position: relative; flex: 1; }
+  
+  /* ✨ 텍스트 박스: 423×450, top을 96→84로 당김 */
+  .cafe-modal__message {
+      margin-top: 25px;
+      margin-left: 58px;
+    width: 387px; height: 450px;
+    border: 1px solid #C2C3D9; border-radius: 10px;
+    padding: 16px 18px; font-size: 14px; line-height: 22px; color: #3A3B4D;
+    overflow: auto; background: #FAFAFF; white-space: pre-line;
+  }
+  
+  /* ✨ 정보 이미지: 텍스트 아래 18px, top을 564→552로 당김 */
+  .cafe-modal__info {
+    position: absolute;
+    left: 58px; top: 520px;          /* ← 84 + 450 + 18 */
+    width: 423px; height: auto; display: block;
+    border-radius: 10px; border: 1px solid #E7E8F2; background: #fff;
+  }
+  
+  .cafe-modal .popup-footer {
+    margin-top: auto; padding: 18px; border-top: 1px solid #E7E8F2;
+    display: flex; gap: 12px; justify-content: center;
+    .btn { min-width: 120px; height: 44px; padding: 0 18px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
+    .btn-ghost { background: #EEF0FF; color: #4B4FD1; border: 1px solid #D9DAEC; }
+    .btn-primary { background: #4B4FD1; color: #fff; border: 1px solid #4B4FD1; }
+  }
+  
+  /* ===================================
+     (옵션) 알림 드롭다운 스타일
+     =================================== */
+  .alarm-btn { position: relative; }
+  .alarm-badge {
+    position: absolute; top: -6px; right: -6px; max-width: 13px; height: 10px; padding: 0;
+    border-radius: 999px; background: #c81d25; color: #fff; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; line-height: 1; box-shadow: 0 0 0 2px #fff; pointer-events: none;
+  }
+  
+  .alarm-wrap {
+    position: absolute; right: 100px; top: 64px;
+    width: 268px; height: auto;
+    background: #fff; border: 1px solid #d9daec; border-radius: 12px;
+    box-shadow: 0 16px 44px rgba(28, 35, 89, 0.18), 0 2px 8px rgba(28, 35, 89, 0.08);
+    padding: 8px; z-index: 3500; box-sizing: border-box;
+  }
+  .alarm-wrap .alarm-card {
+    width: 248px; height: 33px; display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; padding: 16px 8px; border-radius: 8px; box-sizing: border-box;
+  }
+  .alarm-card:hover { background: #f6f7ff; }
+  .alarm-card .txt { flex: 1; font-size: 11px; color: #000000; font-weight: 500;}
+  .chev-btn { width: 4px; height: 28px; border: none; background: none !important; display: grid; place-items: center; border-radius: 6px; }
+  .chev-btn:hover { background: none; }
+  .chev-icon { width: 5px; height: 8px; }

@@ -1,0 +1,280 @@
+/* src/assets/scss/pages/ProfileHome.scss */
+.profile-home {
+    /* 중앙정렬 기준(footer/nav와 동일) */
+    max-width: 1180px;   /* 사이드바(280) + gap(20) + 메인(880) */
+    margin: 0 auto;      /* 가운데 정렬 */
+  
+    .panel.benefits { margin-bottom: 92px; }
+  
+    /* ───── 페이지 외곽 여백(피그마 고정값) ───── */
+    --gap-left: 161px;
+    --gap-right: 149px;
+    --gap-top-from-nav: 34px;
+  
+    /* 제목 라인 동기화(캘린더/문의함 동일 라인) */
+    --title-h: 22px;
+    --title-gap: 10px;
+    --sync-nudge: 0px;
+  
+    /* 진행 중 제휴/혜택 카드 공통 변수 */
+    --benefit-card-w: 267.92px;
+    --benefit-card-h: 167px;
+    --benefit-thumb-h: 86.57px;
+  
+    background: #F6F6FF;
+  
+    /* 외곽 패딩 */
+    padding-top: var(--gap-top-from-nav);
+    padding-left: var(--gap-left);
+    padding-right: var(--gap-right);
+  
+    /* 페이지 레이아웃: 좌측 레일(사이드바) + 메인 */
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+  
+    /* 공통 패널 스타일 */
+    .panel {
+      background: #fff;
+      border: 1.5px solid #D9DAEC;
+      border-radius: 15px;
+    }
+  
+    /* ───── 좌측: 사이드바 ───── */
+    .profile-sidebar { width: 226px; align-self: start; }
+  
+    /* ───── 우측: 메인 ───── */
+    .col-main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  
+    /* 상단: 캘린더 + 문의함 */
+    .row-top {
+      display: grid;
+      grid-template-columns: auto 391px;
+      gap: 34px;
+      align-items: start;
+    }
+  
+    /* 캘린더 */
+    .cal-wrap { width: 456px; }
+    .cal-title {
+      margin: 0 0 var(--title-gap) 4px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #3A3B4D;
+      line-height: var(--title-h);
+      transform: translateY(var(--sync-nudge));
+    }
+    .calendar.cal-compact {
+      --box-w: 456px; --box-h: 370px; --pad: 10px;
+      --head-h: 40px; --head-gap: 6px;
+      --dow-h: 24px; --date-h: 18px; --bar-gap: 2px; --level-gap: 12px;
+  
+      width: var(--box-w);
+      height: var(--box-h);
+      position: relative;
+      border-radius: 15px;
+      border: 1.5px solid #D9DAEC;
+      background: #fff;
+      padding: var(--pad);
+    }
+  
+    /* ── 문의함 컬럼 ── */
+    .inquiries { width: 391px; }
+    .inquiries .col-title,
+    .inquiry-title {
+      margin: 0 0 var(--title-gap) 0;
+      font-size: 14px; font-weight: 700; color: #3A3B4D;
+      line-height: var(--title-h); transform: translateY(var(--sync-nudge));
+    }
+  
+    /* ✅ 카드 컨테이너: 391×164 고정 */
+    .inquiry-card {
+      margin-top: 15px; width: 391px; height: 164px;
+      border-radius: 15px; border: 1.5px solid #D9DAEC; background: #FFFFFF;
+      box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden;
+    }
+  
+    /* ✅ 헤더 박스 */
+    .inquiry-head {
+      width: 354px; height: 36px; margin: 15px auto 0; padding: 10px 15px; box-sizing: border-box;
+      border-radius: 5px; border: 1px solid #C2C3D9; background: #F6F6FF;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 0 0 auto;
+    }
+    .inquiry-head .left, .inquiry-head .right { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  
+    /* 아이콘/텍스트 */
+    .inquiry-head .avatar { width: 20px; height: 20px; border-radius: 50%; flex: 0 0 20px; object-fit: cover; }
+    .inquiry-head .name {
+      font-size: 13px; font-weight: 600; color: #3A3B4D;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px;
+    }
+    .inquiry-head .detail { font-size: 12px; color: #6B6C80; white-space: nowrap; }
+  
+    /* 버튼(자세히 보기) */
+    .inq-more-btn{
+      background: none; border: 0; padding: 0; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; line-height: 1; white-space: nowrap;
+    }
+    .inq-more-btn .icon{ width: 14.07px; height: 11.25px; object-fit: contain; display: block; }
+  
+    /* ✅ 목록 영역 */
+    .inquiry-body{
+      padding: 8px 12px 10px; flex: 1 1 auto; min-height: 0; overflow: auto;
+      &::-webkit-scrollbar{ width: 6px; }
+      &::-webkit-scrollbar-thumb{ background:#E7E8F2; border-radius:6px; }
+      &::-webkit-scrollbar-track{ background:transparent; }
+    }
+    .inq-list{ margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  
+    .inq-row{
+      display: flex; align-items: center; justify-content: space-between;
+      height: 36px; padding: 0 12px;
+      border: 1px solid #C2C3D9; border-radius: 8px; background: #F6F6FF;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+    }
+    .inq-row:hover{ background:#EEF0FF; }
+    .inq-row .row-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .inq-row .plane{ width:20px; height:20px; display:block; }
+    .inq-row .text{ font-size: 14px; color:#3A3B4D; overflow: hidden; text-overflow: ellipsis; }
+    .inq-row::after { content: none !important; }
+    .inquiry-body .empty{ font-size:12px; color:#6B6C80; text-align:center; padding:8px 0; }
+  
+    /* ================================
+       진행 중 제휴/혜택
+       ================================ */
+    .panel.benefits {
+      width: 879px;
+      border-radius: 15px;
+      border: 1.5px solid #D9DAEC;
+      padding: 14px;
+      background: #fff;
+  
+      .benefits-title {
+        margin: 0 0 10px 2px;
+        font-weight: 700; font-size: 14px; line-height: 22px; color: #3A3B4D;
+      }
+  
+      .progress-panel {
+        width: 100%; height: 288px;
+        overflow-y: auto; overflow-x: hidden; padding-right: 4px;
+        &::-webkit-scrollbar { width: 6px; }
+        &::-webkit-scrollbar-thumb { background:#D9DAEC; border-radius: 6px; }
+        scrollbar-width: thin; scrollbar-color: #D9DAEC transparent;
+      }
+  
+      .progress-grid {
+        display: grid;
+        grid-template-columns: repeat(3, var(--benefit-card-w));
+        grid-auto-rows: var(--benefit-card-h);
+        gap: 10px;
+      }
+    }
+  }
+  
+  /* ===== 패널 강제 고정 (크기·그리드) ===== */
+  .profile-home .panel.benefits {
+    width: 879px !important;
+    height: 288px !important;
+    border: 1.5px solid #D9DAEC !important;
+    border-radius: 15px !important;
+    background: #FFFFFF !important;
+    padding: 16px 8px !important;
+    box-sizing: border-box;
+  
+    .progress-panel {
+      height: calc(288px - 24px - 10px) !important;
+      overflow-y: auto !important; overflow-x: hidden !important; padding-right: 4px;
+      &::-webkit-scrollbar { width: 6px; }
+      &::-webkit-scrollbar-thumb { background: #D9DAEC; border-radius: 6px; }
+      scrollbar-width: thin; scrollbar-color: #D9DAEC transparent; scrollbar-gutter: stable both-edges;
+    }
+  
+    .progress-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, 267.92px) !important;
+      grid-auto-rows: 167.17px !important;
+      gap: 10px !important;
+    }
+  
+    .benefit-card {
+      width: 267.92px !important; height: 167.17px !important;
+      border-radius: 14px !important; border: 0.75px solid #D9DAEC !important;
+      background: #FFFFFF !important; overflow: hidden !important;
+      display: flex !important; flex-direction: column !important;
+  
+      /* 썸네일 */
+      .thumb {
+        position: relative; width: 100% !important; height: var(--benefit-thumb-h) !important;
+        img { width: 100%; height: 100%; object-fit: cover !important; display: block; }
+  
+        /* 1) 최신 JSX: scrap-badge가 .thumb 안에 있을 때 (권장) */
+        .scrap-badge {
+          position: absolute;
+          top: 96px; right: 8px;
+          display: inline-flex; align-items: center; gap: 6px;
+          z-index: 5;
+        }
+      }
+  
+      /* 2) 예전 JSX: scrap-badge가 .body 안에 있을 때 → 이미지 위로 올리기 */
+      .body {
+        position: relative;
+        padding: 10px 12px 14px; display: flex; flex-direction: column; gap: 6px;
+  
+        .scrap-badge {
+          position: absolute;
+          /* 썸네일 높이만큼 위로 끌어올림 */
+          top: calc(-1 * var(--benefit-thumb-h) + 6px);
+          right: 8px;
+          display: inline-flex; align-items: center; gap: 6px;
+          z-index: 5;
+          background: rgba(255,255,255,0.9);
+          border-radius: 999px;
+          padding: 3px 6px;
+          box-shadow: 0 2px 6px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+        }
+      }
+  
+      .scrap-count { font-size: 12px; font-weight: 700; line-height: 1; color: #5CCB9A; }
+      .scrap-count.on { color: #1FC37D; }
+  
+      .scrap-badge .scrap {
+        width: 20px; height: 20px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: 0; background: none; padding: 0; cursor: pointer;
+        &:disabled { cursor: default; opacity: .6; }
+        img { width: 16px; height: 16px; display: block; }
+      }
+  
+      /* 제목줄 – 예비 스크랩 버튼/카운트는 숨김(중복 방지) */
+      .title-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+      .title-row .scrap,
+      .title-row .scrap-count { display: none !important; }
+  
+      .title { margin: 0; font-size: 16px; font-weight: 700; color: #1C2359; line-height: 1.3;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  
+      /* 메타 3줄(대상/기간/혜택) */
+      .meta {
+        list-style: none !important; padding: 0 !important; margin: 6px 0 0 !important;
+        display: flex; flex-direction: column; gap: 2px !important;
+        li {
+          display: flex; align-items: center; gap: 6px;
+          font-size: 12px; line-height: 1.4; color: #61637A;
+          .label { font-weight: 700; }
+          .sep { color: #61637A; }
+          .value { color: #1C2359; min-width: 0; overflow: hidden !important; white-space: nowrap; text-overflow: ellipsis; }
+        }
+      }
+    }
+  }
+  
+  /* 섹션 타이틀 (JSX: <h3 className="section-title">) */
+  .benefits-wrap .section-title {
+    margin: 0 0 10px 2px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 22px;
+    color: #3A3B4D;
+  }
+  
