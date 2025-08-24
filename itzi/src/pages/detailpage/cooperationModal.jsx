@@ -1,12 +1,9 @@
 import x from "../../assets/img/x.png"
 import { useState } from "react";
 import xButton from "../../assets/img/xButton.png"
-import Dropdown from "../../components/common/Dropdown.jsx";
+import Dropdown from "../../components/common/Dropdown.jsx"
 
 const CooperationModal = ({onClose, onSend}) => {
-
-  const [dropdownView, setDropdownView] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState(null);
 
   const [kwInput, setKwInput] = useState("");
   const [keywords, setKeywords] = useState([]);
@@ -75,29 +72,6 @@ const CooperationModal = ({onClose, onSend}) => {
     setKeywords(prev => prev.filter((_, i) => i !== idx));
   };
 
-  // onSend 로 보낼 때 포함시키고 싶다면:
-  const handleSend = () => {
-    onSend?.({ keywords });
-  };
-
-  const sortData1 = [
-    '게시글과 동일',
-    '직접 입력'
-  ]
-
-  const sortData2 = [
-    '자동 입력',
-    '직접 입력'
-  ]
-
-  const handleClickDropDown = () => {
-    setDropdownView(!dropdownView);
-  }
-
-  const handleClickMenu = (menu) => {
-    setSelectedMenu(menu);
-    setDropdownView(!dropdownView);
-  }
 
   return (
     <div className="cooperationModal" onClick={onClose}>
