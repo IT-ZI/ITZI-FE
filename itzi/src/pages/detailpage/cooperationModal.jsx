@@ -1,7 +1,99 @@
 import x from "../../assets/img/x.png"
 import { useState } from "react";
+import xButton from "../../assets/img/xButton.png"
 
-const cooperationModal = ({onClose, onSend}) => {
+const CooperationModal = ({onClose, onSend}) => {
+
+  const [dropdownView, setDropdownView] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState(null);
+
+  const [kwInput, setKwInput] = useState("");
+  const [keywords, setKeywords] = useState([]);
+
+  const MAX = 5; // 최대 개수 
+  const MAX_LEN = 10; // 한 키워드 최대 길이 
+
+  const addKeywordsFromString = (raw) => {
+    if (!raw) return;
+    const exist = new Set(keywords.map(k => k.toLowerCase())); // 중복 방지(대소문자 무시)
+    const incoming = raw.split(",")
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(s => s.slice(0, MAX_LEN)); // 10자 제한(길면 잘라냄)
+
+    const next = [...keywords];
+    for (const token of incoming) {
+      if (next.length >= MAX) break;
+      if (!exist.has(token.toLowerCase())) {
+        next.push(token);
+        exist.add(token.toLowerCase());
+      }
+    }
+    setKeywords(next);
+  };
+
+  const handleKwChange = (e) => {
+    const v = e.target.value;
+    // 입력 중 콤마가 들어오면 바로 분리
+    if (v.includes(",")) {
+      addKeywordsFromString(v);
+      setKwInput("");
+    } else {
+      setKwInput(v);
+    }
+  };
+
+  const handleKwKeyDown = (e) => {
+    // 한글 입력중 조합(IME)일 때는 건너뛰기
+    if (e.isComposing) return;
+
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addKeywordsFromString(kwInput);
+      setKwInput("");
+    }
+    // 입력값 없을 때 백스페이스로 마지막 태그 삭제
+    if (e.key === "Backspace" && !kwInput && keywords.length) {
+      e.preventDefault();
+      setKeywords(prev => prev.slice(0, -1));
+    }
+  };
+
+  const handleKwBlur = () => {
+    // 포커스 아웃 시 남은 입력 반영
+    if (kwInput) {
+      addKeywordsFromString(kwInput);
+      setKwInput("");
+    }
+  };
+
+  const removeKeyword = (idx) => {
+    setKeywords(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  // onSend 로 보낼 때 포함시키고 싶다면:
+  const handleSend = () => {
+    onSend?.({ keywords });
+  };
+
+  const sortData1 = [
+    '게시글과 동일',
+    '직접 입력'
+  ]
+
+  const sortData2 = [
+    '자동 입력',
+    '직접 입력'
+  ]
+
+  const handleClickDropDown = () => {
+    setDropdownView(!dropdownView);
+  }
+
+  const handleClickMenu = (menu) => {
+    setSelectedMenu(menu);
+    setDropdownView(!dropdownView);
+  }
 
   return (
     <div className="cooperationModal" onClick={onClose}>
@@ -26,16 +118,28 @@ const cooperationModal = ({onClose, onSend}) => {
               </div>
               <div className="content_container3">
                 <h3>문의 내용 상세</h3>
-                <textarea type="text" placeholder="어떤 혜택과 방식을 원하는지 자유롭게 작성해 주세요."></textarea>
+                <textarea placeholder="어떤 혜택과 방식을 원하는지 자유롭게 작성해 주세요."></textarea>
               </div>
               <div className="content_container4">
                 <div className="content_header">
                   <h3>AI 작성 요청 키워드 입력</h3>
                   <p>AI 작성 참고용 키워드를 입력해보세요!(10자 이내/최대 5개)</p>
                 </div>
-                <input type="text" placeholder="ex) 예: 친절함, 제목 필수, 기승전결"></input>
+                <input
+                  type="text"
+                  value={kwInput}
+                  onChange={handleKwChange}
+                  onKeyDown={handleKwKeyDown}
+                  onBlur={handleKwBlur}
+                  placeholder="ex) 예: 친절함, 제목 필수, 기승전결"
+                />
                 <div className="ai_keyword_box">
-                  
+                  {keywords.map((kw, i) => (
+                    <span className="chip" key={`${kw}-${i}`}>
+                      {kw}
+                      <img src={xButton} alt="" className="chip-x" onClick={() => removeKeyword(i)}/>
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -59,4 +163,5 @@ const cooperationModal = ({onClose, onSend}) => {
   )
 }
 
-export default cooperationModal
+export default CooperationModal
+
