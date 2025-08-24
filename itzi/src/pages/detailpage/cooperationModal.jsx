@@ -35,7 +35,7 @@ const cooperationModal = ({onClose, onSend}) => {
                 </div>
                 <input type="text" placeholder="ex) 예: 친절함, 제목 필수, 기승전결"></input>
                 <div className="ai_keyword_box">
-
+                  
                 </div>
               </div>
             </div>
