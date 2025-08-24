@@ -26,7 +26,7 @@ const Cooperationlist = () => {
     })
   }
   
-  const postId = 33;
+  const postId = 1;
 
   const keywords = data?.result?.author?.keywords ?? [];
   const rating = Math.max(0, Math.min(Number(data?.result?.author?.rating ?? 0), 5));
@@ -84,7 +84,7 @@ const Cooperationlist = () => {
               <div className="line">
                 <p className="title">기간</p>
                 <p>|</p>
-                <p>2025.09.01 ~ 2025.09.14</p>
+                <p>{data?.result?.startDate} ~ {data?.result?.endDate}</p>
               </div>
               <div className="line">
                 <p className="title">혜택</p>
