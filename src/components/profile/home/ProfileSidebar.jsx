@@ -47,7 +47,7 @@ export default function ProfileSidebar({ profile, toProceed }) {
         <div className="step_container">
           <p>제휴 맺기</p>
           <div className="step">
-            <button className="list2" onClick={() => nav("/cooperation")}>
+            <button className="list2" onClick={() => nav("/select")}>
               <img src={step1} alt="step1" />
               <p>선택하기</p>
             </button>

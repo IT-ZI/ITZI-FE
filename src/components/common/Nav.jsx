@@ -6,7 +6,7 @@ import profile from "../../assets/img/profile2.png";
 import next from "../../assets/img/next.png";
 import { useState, useRef, useEffect } from "react";
 import ProfileDropdown from "./ProfileDropdown";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate, useLocation, matchPath } from "react-router-dom";
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +15,6 @@ const Nav = () => {
   const loc = useLocation();
   const wrapRef = useRef(null);
 
-  // 데모용 알림
   const [alarms, setAlarms] = useState([
     "[샤브온당] 에서 제휴를 수락했습니다.",
     "[투고샐러드] 에서 제휴를 거절했습니다.",
@@ -23,10 +22,9 @@ const Nav = () => {
     "[오르비에토] 에서 제휴 문의가 들어왔습니다.",
   ]);
 
-  const toggleProfile = () => setIsOpen(v => !v);
-  const toggleAlarm = () => setIsAlarmOpen(v => !v);
+  const toggleProfile = () => setIsOpen((v) => !v);
+  const toggleAlarm = () => setIsAlarmOpen((v) => !v);
 
-  // 바깥 클릭 시 닫기
   useEffect(() => {
     const onDoc = (e) => {
       if (!wrapRef.current) return;
@@ -39,19 +37,27 @@ const Nav = () => {
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
-  // 알림 → 이동 + 읽음 처리
   const onArrowClick = (text, idx) => {
     const m = text.match(/\[([^\]]+)\]/);
     const brand = m ? m[1] : "샤브온당";
-    setAlarms(prev => prev.filter((_, i) => i !== idx));
+    setAlarms((prev) => prev.filter((_, i) => i !== idx));
     setIsAlarmOpen(false);
     nav("/partnering", { state: { openStartModal: true, brand } });
   };
 
-  // /cooperation, /partnering 모두 "제휴를 잇ZI" 활성
-  const coopActive =
-    loc.pathname.startsWith("/cooperation") ||
-    loc.pathname.startsWith("/partnering");
+  // ✅ 제휴 영역으로 간주할 모든 경로 패턴 (필요시 자유롭게 추가)
+  const COOP_PATTERNS = [
+    "/cooperation",
+    "/partnering/*",
+    "/partner/*",
+    "/select",
+    "/profile/*",
+    "/inquiry/*",
+  ];
+
+  const coopActive = COOP_PATTERNS.some((pattern) =>
+    matchPath({ path: pattern, end: false }, loc.pathname)
+  );
 
   return (
     <div className="nav" ref={wrapRef}>
@@ -72,9 +78,7 @@ const Nav = () => {
             <p>|</p>
             <NavLink
               to="/cooperation"
-              className={({ isActive }) =>
-                `tab ${(isActive || coopActive) ? "active" : ""}`
-              }
+              className={() => `tab ${coopActive ? "active" : ""}`}
             >
               제휴를 잇ZI
             </NavLink>
@@ -85,7 +89,9 @@ const Nav = () => {
           <div className="icon_container">
             <button type="button" className="alarm-btn" onClick={toggleAlarm}>
               <img className="alarm" src={alarm} alt="알림" />
-              {alarms.length > 0 && <span className="alarm-badge">{alarms.length}</span>}
+              {alarms.length > 0 && (
+                <span className="alarm-badge">{alarms.length}</span>
+              )}
             </button>
 
             <button
