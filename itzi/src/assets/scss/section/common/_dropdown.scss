@@ -1,0 +1,18 @@
+.dropdown-field{
+    .dropdown-select{
+        width:426px;
+        height:50px;
+        border-radius: 10px;
+        border:1px solid #C2C3D9;
+        font-size: 17px;
+        font-style: normal;
+        font-weight: 400;
+        color:#A5A8C3;
+        padding-left:20px;
+    }
+
+    .dropdown-select::placeholder { 
+        color: #A5A8C3;   /* 원하는 색 */
+        opacity: 1;       /* Firefox가 기본적으로 연하게 보여서 보정 */
+    }
+}

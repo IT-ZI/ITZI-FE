@@ -1,0 +1,69 @@
+import { useId, useMemo, useState } from 'react';
+
+const PRESETS = {
+  autoManual: [
+    { value: 'auto',   label: '자동 입력' },
+    { value: 'manual', label: '직접 입력' },
+  ],
+  sameManual: [
+    { value: 'same',   label: '게시물과 동일' },
+    { value: 'manual', label: '직접 입력' },
+  ],
+};
+
+export default function Dropdown({
+  preset = 'autoManual',          // 'autoManual' | 'sameManual'      
+  value,                          // { mode: 'auto'|'same'|'manual', text?: string }
+  onChange,                       // (next) => void
+  selectClassName = '',
+  inputClassName = '',
+  inputPlaceholder = '직접 입력',
+}) {
+  const id = useId();
+  const options = useMemo(() => PRESETS[preset] ?? PRESETS.autoManual, [preset]);
+
+  // 외부 value가 없으면 프리셋의 첫 옵션으로 시작
+  const [mode, setMode] = useState(value?.mode ?? options[0].value);
+  const [text, setText] = useState(value?.text ?? '');
+
+  const emit = (next) => onChange?.(next);
+
+  const handleSelect = (e) => {
+    const m = e.target.value;
+    setMode(m);
+    emit({ mode: m, text: m === 'manual' ? text : '' });
+  };
+
+  const handleInput = (e) => {
+    const t = e.target.value;
+    setText(t);
+    emit({ mode: 'manual', text: t });
+  };
+
+  return (
+    <div className="dropdown-field">
+      {mode !== 'manual' ? (
+        <select
+          id={id}
+          className={`dropdown-select ${selectClassName}`}
+          value={mode}
+          onChange={handleSelect}
+        >
+          {options.map(o => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+      ) : (
+        <div className="dropdown-manual">
+          <input
+            type="text"
+            className={`dropdown-input ${inputClassName}`}
+            value={text}
+            onChange={handleInput}
+            placeholder={inputPlaceholder}
+          />
+        </div>
+      )}
+    </div>
+  );
+}

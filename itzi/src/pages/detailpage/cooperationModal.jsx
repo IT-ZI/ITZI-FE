@@ -1,6 +1,7 @@
 import x from "../../assets/img/x.png"
 import { useState } from "react";
 import xButton from "../../assets/img/xButton.png"
+import Dropdown from "../../components/common/Dropdown.jsx";
 
 const CooperationModal = ({onClose, onSend}) => {
 
@@ -12,6 +13,9 @@ const CooperationModal = ({onClose, onSend}) => {
 
   const MAX = 5; // 최대 개수 
   const MAX_LEN = 10; // 한 키워드 최대 길이 
+
+  const [author, setAuthor] = useState({ mode: 'auto', text: '' });
+  const [title, setTitle]   = useState({ mode: 'same', text: '' });
 
   const addKeywordsFromString = (raw) => {
     if (!raw) return;
@@ -110,11 +114,19 @@ const CooperationModal = ({onClose, onSend}) => {
               </div>
               <div className="content_container2">
                 <h3>희망 제휴 기간</h3>
-                <input type="text" placeholder="희망 제휴 시간을 선택 및 작성해주세요"></input>
+                <Dropdown
+                  preset="sameManual"
+                  value={title}
+                  onChange={setTitle}
+                />
               </div>
               <div className="content_container2">
                 <h3>우리 단체 정보</h3>
-                <input type="text" placeholder="우리 단체 기본 정보를 간단히 작성해 주세요."></input>
+                <Dropdown
+                  preset="autoManual"
+                  value={author}
+                  onChange={setAuthor}
+                />
               </div>
               <div className="content_container3">
                 <h3>문의 내용 상세</h3>
