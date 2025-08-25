@@ -20,7 +20,7 @@ const ToggleImgIcon = (props) => (
 
 const MAX_SIZE_MB = 5;
 
-const CooperationWrite = () => {
+const BenefitsWrite = () => {
     const navigate = useNavigate();
 
     // 삭제 모달
@@ -110,10 +110,10 @@ const CooperationWrite = () => {
     };
 
     return (
-        <div className='CoopWrite_wrap'>
+        <div className='BenWrite_wrap'>
             <div className="write_header">
                 <img src={BackIcon} alt="BackIcon" onClick={() => navigate(-1)} />
-                <h3>제휴 모집 글쓰기</h3>
+                <h3>혜택 홍보 글쓰기</h3>
             </div>
             <div className="write_body">
                 <h4>사진 업로드</h4>
@@ -159,30 +159,30 @@ const CooperationWrite = () => {
                 </div>
 
                 <h4>기본 정보</h4>
-                <input type="text" className="board_title" placeholder='모집 글 제목' value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input type="text" className="board_title" placeholder='모집 글 제목' />
                 <div className="coop">
-                    <input type="text" className="board_input" placeholder='제휴 대상' value={target} onChange={(e) => setTarget(e.target.value)} />
+                    <input type="text" className="board_input" placeholder='제휴 대상' />
                     <div className="check">
                         <input type='checkbox' id='checkbox' />
                         <div className="able">협의 가능</div>
                     </div>
                 </div>
                 <div className="coop">
-                    <input type="text" className="board_input" placeholder='제휴 기간' value={period} onChange={(e) => setPeriod(e.target.value)} />
+                    <input type="text" className="board_input" placeholder='제휴 기간' />
                     <div className="check">
                         <input type='checkbox' id='checkbox' />
                         <div className="able">협의 가능</div>
                     </div>
                 </div>
                 <div className="coop">
-                    <input type="text" className="board_input" placeholder='제휴 혜택' value={benefit} onChange={(e) => setBenefit(e.target.value)} />
+                    <input type="text" className="board_input" placeholder='제휴 혜택' />
                     <div className="check">
                         <input type='checkbox' id='checkbox' />
                         <div className="able">협의 가능</div>
                     </div>
                 </div>
                 <div className="coop">
-                    <input type="text" className="board_input" placeholder='제휴 조건' value={condition} onChange={(e) => setCondition(e.target.value)} />
+                    <input type="text" className="board_input" placeholder='제휴 조건' />
                     <div className="check">
                         <input type='checkbox' id='checkbox' />
                         <div className="able">협의 가능</div>
@@ -193,21 +193,9 @@ const CooperationWrite = () => {
                     <h4>상세 내용</h4>
                     <div className="ai_auto_write">AI 자동 작성</div>
                 </div>
-                {/* isAIReady에 따라 active 클래스를 토글 */}
-                <div
-                    className={`ai_section ${isAIReady ? 'active' : ''}`}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => isAIReady && console.log('AI 자동 작성 실행')}
-                    onKeyDown={(e) => isAIReady && (e.key === 'Enter' || e.key === ' ') && console.log('AI 자동 작성 실행')}
-                    aria-disabled={!isAIReady}
-                >
+                <div className="ai_section">
                     <div className="ai_auto">AI 자동 작성</div>
-                    <div className="ai_desc">
-                        {isAIReady
-                            ? <>기본 정보를 바탕으로 AI가 상세 내용을 작성합니다<br />작성된 내용은 수정 가능합니다</>
-                            : <>기본 정보를 입력하신 후 작성할 수 있습니다</>}
-                    </div>
+                    <div className="ai_desc">기본 정보를 입력하신 후 작성할 수 있습니다</div>
                 </div>
 
                 <h4>모집 글 노출 기간</h4>
@@ -250,14 +238,14 @@ const CooperationWrite = () => {
                 onClose={() => setOpenPreview(false)}
                 data={previewData}
             />
-            <DeleteModal 
-                open={openDelete} 
-                onClose={() => setOpenDelete(false)} 
-                onConfirm={handleDelete} 
-                loading={delLoading} 
+            <DeleteModal
+                open={openDelete}
+                onClose={() => setOpenDelete(false)}
+                onConfirm={handleDelete}
+                loading={delLoading}
             />
         </div>
     )
 }
 
-export default CooperationWrite
+export default BenefitsWrite

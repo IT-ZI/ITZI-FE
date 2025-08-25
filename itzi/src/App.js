@@ -6,8 +6,9 @@ import Benefits from "./pages/home/Benefits"
 import Cooperation from "./pages/home/Cooperation"
 import BenefitList from "./pages/detailpage/benefitList"
 import Cooperationlist from "./pages/detailpage/cooperationlist"
-import CooperationWrite, { BenefitTab, RecruitTab } from "./pages/write/CooperationWrite"
-import Write from "./pages/write/Write"
+import WriteHome, { BenefitTab, RecruitTab } from "./pages/write/WriteHome"
+import CooperationWrite from "./pages/write/CooperationWrite"
+import BenefitWrite from "./pages/write/BenefitsWrite";
 
 const App = () => {
   return (
@@ -19,12 +20,13 @@ const App = () => {
           <Route path="cooperation" element={<Cooperation/>}/>
           <Route path="promotion/:postId" element={<BenefitList/>}/>
           <Route path="recruiting/:postId" element={<Cooperationlist/>}/>
-          <Route path="cooperation/write" element={<CooperationWrite />}>
+          <Route path="cooperation/write" element={<WriteHome />}>
             <Route index element={<Navigate to="recruit" replace />} />
             <Route path="recruit" element={<RecruitTab />} />
             <Route path="benefit" element={<BenefitTab />} />
           </Route>
-          <Route path="/cooperation/write/new" element={<Write />} />
+          <Route path="/cooperation/write/new" element={<CooperationWrite />} />
+          <Route path="/cooperation/write/benefit/new" element={<BenefitWrite />} />
         </Route>
       </Routes>
     </LocalizationProvider>
