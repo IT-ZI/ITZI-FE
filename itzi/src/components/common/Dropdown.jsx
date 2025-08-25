@@ -12,18 +12,20 @@ const PRESETS = {
 };
 
 export default function Dropdown({
-  preset = 'autoManual',          // 'autoManual' | 'sameManual'      
-  value,                          // { mode: 'auto'|'same'|'manual', text?: string }
-  onChange,                       // (next) => void
+  preset = 'autoManual',        
+  value,                        
+  onChange,                       
   selectClassName = '',
   inputClassName = '',
-  inputPlaceholder = '직접 입력',
+  inputPlaceholder = '직접 입력해주세요.',
+  selectPlaceholder = '',
 }) {
   const id = useId();
   const options = useMemo(() => PRESETS[preset] ?? PRESETS.autoManual, [preset]);
 
-  // 외부 value가 없으면 프리셋의 첫 옵션으로 시작
-  const [mode, setMode] = useState(value?.mode ?? options[0].value);
+  // ✅ placeholder가 있으면 ''로 시작 → placeholder가 보임
+  const initialMode = value?.mode ?? (selectPlaceholder ? '' : options[0].value);
+  const [mode, setMode] = useState(initialMode);
   const [text, setText] = useState(value?.text ?? '');
 
   const emit = (next) => onChange?.(next);
@@ -39,16 +41,22 @@ export default function Dropdown({
     setText(t);
     emit({ mode: 'manual', text: t });
   };
-
+  
   return (
     <div className="dropdown-field">
       {mode !== 'manual' ? (
         <select
           id={id}
-          className={`dropdown-select ${selectClassName}`}
+          className={`dropdown-select ${mode === '' ? 'is-placeholder' : ''} ${selectClassName}`}
           value={mode}
           onChange={handleSelect}
         >
+          {/* ✅ placeholder 옵션 */}
+          {selectPlaceholder && (
+            <option value="" disabled hidden>
+              {selectPlaceholder}
+            </option>
+          )}
           {options.map(o => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}

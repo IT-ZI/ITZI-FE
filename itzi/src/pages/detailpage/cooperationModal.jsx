@@ -6,13 +6,13 @@ import Dropdown from "../../components/common/Dropdown.jsx"
 const CooperationModal = ({onClose, onSend}) => {
 
   const [kwInput, setKwInput] = useState("");
-  const [keywords, setKeywords] = useState([]);
+  const [keywords, setKeywords] = useState([]); // 확정된 키워드 목록
 
-  const MAX = 5; // 최대 개수 
+  const MAX = 5; // 키워드 최대 개수 
   const MAX_LEN = 10; // 한 키워드 최대 길이 
 
-  const [author, setAuthor] = useState({ mode: 'auto', text: '' });
-  const [title, setTitle]   = useState({ mode: 'same', text: '' });
+  const [date, setDate]   = useState({ mode: 'same', text: '' }); // 희망 제휴 시간 
+  const [organization, setOrganization] = useState({ mode: 'auto', text: '' }); // 우리 단체 정보 
 
   const addKeywordsFromString = (raw) => {
     if (!raw) return;
@@ -90,16 +90,18 @@ const CooperationModal = ({onClose, onSend}) => {
                 <h3>희망 제휴 기간</h3>
                 <Dropdown
                   preset="sameManual"
-                  value={title}
-                  onChange={setTitle}
+                  value={{mode:''}}
+                  onChange={setDate}
+                  selectPlaceholder="희망 제휴 기간을 선택 및 작성해 주세요."
                 />
               </div>
               <div className="content_container2">
                 <h3>우리 단체 정보</h3>
                 <Dropdown
                   preset="autoManual"
-                  value={author}
-                  onChange={setAuthor}
+                  value={{mode:''}}
+                  onChange={setOrganization}
+                  selectPlaceholder="우리 단체 기본 정보를 간단히 작성해 주세요."
                 />
               </div>
               <div className="content_container3">
