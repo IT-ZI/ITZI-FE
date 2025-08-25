@@ -17,7 +17,7 @@ const CooperationModal = ({onClose, onSend}) => {
 
   const postId=33;
   const userId=2000;
-  const receiverId =6; 
+  const receiverId =8; 
 
   const callApi = async () => {
     const periodType = date.mode === "manual" ? "CUSTOM" : "SAME_AS_POST";
@@ -196,7 +196,7 @@ const CooperationModal = ({onClose, onSend}) => {
                         <p>{loading? '변환 중입니다..' : "AI문의 글 변환"}</p>
                     </div>          
                   }
-                    <p>{content}</p>
+                    <p className="AI_content">{content}</p>
                 </div>
             </div>
         </div>
