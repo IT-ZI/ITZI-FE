@@ -16,8 +16,8 @@ const CooperationModal = ({onClose, onSend}) => {
   
 
   const postId=33;
-  const userId=2000;
-  const receiverId =8; 
+  const userId=1;
+  const receiverId =20; 
 
   const callApi = async () => {
     const periodType = date.mode === "manual" ? "CUSTOM" : "SAME_AS_POST";
@@ -58,6 +58,26 @@ const CooperationModal = ({onClose, onSend}) => {
       setLoading(false);
     }
   };
+
+  const patchContent = async() => {
+    try{
+      const url = `https://api.onlyoneprivate.store/partnership/${data.result.partnershipId}/send`;
+
+      const payload = {
+        content: content.trim(),
+      }
+
+      console.log("patch")
+
+      const {data} = await axios.patch(url, payload, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    } catch(err) {
+      console.log(err);
+    } finally{
+      console.log("연동 성공");
+    }
+  }
 
   const MAX = 5; // 키워드 최대 개수 
   const MAX_LEN = 10; // 한 키워드 최대 길이 
@@ -196,12 +216,14 @@ const CooperationModal = ({onClose, onSend}) => {
                         <p>{loading? '변환 중입니다..' : "AI문의 글 변환"}</p>
                     </div>          
                   }
-                    <p className="AI_content">{content}</p>
+                  {content !== null && (
+                    <textarea className="AI_content" value={content} onChange={(e) => setContent(e.target.value)}/>
+                  )}
                 </div>
             </div>
         </div>
         <div className="Button">
-          <div className="sendbutton" onClick={onSend} >
+          <div className="sendbutton" onClick={patchContent} >
             보내기
           </div>
         </div>

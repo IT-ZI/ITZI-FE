@@ -213,6 +213,7 @@
                     justify-content: center;
                     align-items: center;
                     padding:10px;
+                    flex-direction: column;
 
                     .AI_content{
                         width: 423px;
@@ -221,6 +222,9 @@
                         font-size: 16px;
                         font-style: normal;
                         font-weight: 400;
+                        resize:none;
+                        border:none;
+                        background-color: #F6F6FF;
                     }
 
                     .click{
