@@ -9,6 +9,18 @@ import Banner2 from "../../assets/img/coop_banner_2.png";
 import BookmarkOn from "../../assets/img/ic_bookmark_on.svg";
 import BookmarkOff from "../../assets/img/ic_bookmark_off.svg";
 
+const API_BASE = 'https://api.onlyoneprivate.store';
+
+const calcDDay = (exposureEndDate, endDate) => {
+    const raw = exposureEndDate || endDate;
+    if (!raw) return 0;
+    const end = new Date(raw);
+    const today = new Date();
+    end.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    return Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+};
+
 const Card = ({ post, onToggleBookmark }) => {
     return (
         <div className="card">
@@ -54,18 +66,19 @@ const Card = ({ post, onToggleBookmark }) => {
 };
 
 /* ---------- 그리드 래퍼 ---------- */
-const CardGrid = ({ initial }) => {
-    const [posts, setPosts] = useState(initial);
+const CardGrid = ({ initial, posts: controlledPosts, onToggleBookmark: controlledToggle }) => {
+    const [uncontrolled, setUncontrolled] = useState(initial || []);
+    const posts = controlledPosts ?? uncontrolled;
 
-    const toggleBookmark = (id) => {
-        setPosts(prev =>
+    const toggleBookmark = controlledToggle ?? ((id) => {
+        setUncontrolled(prev =>
             prev.map(p =>
                 p.id === id
-                    ? { ...p, bookmarked: !p.bookmarked, bookmarkCount: p.bookmarkCount + (p.bookmarked ? -1 : 1) }
+                    ? { ...p, bookmarked: !p.bookmarked, bookmarkCount: Math.max(0, (p.bookmarkCount ?? 0) + (p.bookmarked ? -1 : 1)) }
                     : p
             )
         );
-    };
+    });
 
     if (posts.length === 0) {
         return (
@@ -89,100 +102,161 @@ const CardGrid = ({ initial }) => {
 
 /* ---------- 탭: 제휴 모집 게시글 ---------- */
 export const RecruitTab = () => {
-    const dummy = [
-        {
-            id: 1,
-            title: "성신여대 X 카페 스피호",
-            image: Banner1,
-            target: "성신여대 재학생",
-            period: "2025.09.01 ~ 2025.12.31",
-            benefit: "아메리카노 20% 할인",
-            bookmarkCount: 12,
-            bookmarked: false,
-            dday: 20,
-            negotiable: { target: false, period: true, benefit: true },
-        },
-        {
-            id: 2,
-            title: "성신여대 X 체리블라썸나이스",
-            image: Banner2,
-            target: "성신여대 학생증 소지자",
-            period: "2025.09.10 ~ 2025.12.31",
-            benefit: "디저트 세트 15% 할인",
-            bookmarkCount: 8,
-            bookmarked: true,
-            dday: 50,
-            negotiable: { target: true, period: true, benefit: true },
-        },
-        {
-            id: 3,
-            title: "성신여대 X 빵굽는하루",
-            image: Banner1,
-            target: "성신여대 재학생",
-            period: "2025.08.20 ~ 2025.10.30",
-            benefit: "모든 빵 10% 할인",
-            bookmarkCount: 5,
-            bookmarked: false,
-            dday: 3,
-            negotiable: { target: true, period: true, benefit: true },
-        },
-        {
-            id: 4,
-            title: "성신여대 X 라떼하우스",
-            image: Banner2,
-            target: "성신여대 학생/교직원",
-            period: "2025.09.15 ~ 2025.11.30",
-            benefit: "라떼 메뉴 무료 사이즈업",
-            bookmarkCount: 15,
-            bookmarked: true,
-            dday: 15,
-            negotiable: { target: true, period: true, benefit: false },
-        },
-        {
-            id: 5,
-            title: "성신여대 X 스윗티드링크",
-            image: Banner1,
-            target: "성신여대 재학생",
-            period: "2025.09.01 ~ 2025.12.15",
-            benefit: "음료 1+1 이벤트",
-            bookmarkCount: 20,
-            bookmarked: false,
-            dday: 30,
-            negotiable: { target: false, period: true, benefit: true },
-        },
-    ];
-    return <CardGrid initial={dummy} />;
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [posts, setPosts] = useState([]);
+
+    // 낙관적 북마크 토글
+    const onToggleBookmark = (id) => {
+        setPosts(prev =>
+            prev.map(p =>
+                p.id === id
+                    ? { ...p, bookmarked: !p.bookmarked, bookmarkCount: Math.max(0, (p.bookmarkCount ?? 0) + (p.bookmarked ? -1 : 1)) }
+                    : p
+            )
+        );
+    };
+
+    React.useEffect(() => {
+        const controller = new AbortController();
+        const fetchMine = async () => {
+            setLoading(true);
+            setErrorMsg('');
+            try {
+                const params = new URLSearchParams();
+                params.set('type', 'RECRUITING');
+                params.set('userId', '1'); // 요구사항: userId 고정
+
+                const res = await fetch(`${API_BASE}/recruiting/mine?${params.toString()}`, {
+                    signal: controller.signal,
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+
+                if (data?.error || data?.isSuccess === false) {
+                    throw new Error(data?.message || data?.error?.message || '목록을 가져오지 못했습니다.');
+                }
+
+                // 명세: result가 배열
+                const list = Array.isArray(data?.result) ? data.result : [];
+                const normalized = list
+                    // DRAFT / PUBLISHED만 온다고 했지만, 혹시 몰라 가드
+                    .filter(item => item?.status === 'PUBLISHED' || item?.status === 'DRAFT')
+                    .map(item => ({
+                        id: item.postId,
+                        title: item.title,
+                        image: item.postImageUrl || Banner1, // 이미지 없으면 대체 배너
+                        target: item.target,
+                        period: `${item.startDate || ''} ~ ${item.endDate || ''}`,
+                        benefit: item.benefit,
+                        bookmarkCount: item.bookmarkCount ?? 0,
+                        bookmarked: false, // 서버 토글 API 미정 → 로컬만
+                        dday: calcDDay(item.exposureEndDate, item.endDate),
+                        negotiable: {
+                            target: !!item.targetNegotiable,
+                            period: !!item.periodNegotiable,
+                            benefit: !!item.benefitNegotiable,
+                        },
+                        raw: item,
+                    }));
+
+                setPosts(normalized);
+            } catch (err) {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
+                setErrorMsg(err?.message || '목록을 가져오지 못했습니다.');
+                setPosts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMine();
+        return () => controller.abort();
+    }, []);
+
+    if (loading) {
+        return <div className="category_content"><div className="loading">불러오는 중...</div></div>;
+    }
+    if (errorMsg) {
+        return <div className="category_content"><div className="error">{errorMsg}</div></div>;
+    }
+
+    return <CardGrid posts={posts} onToggleBookmark={onToggleBookmark} />;
 };
 
 /* ---------- 탭: 혜택 홍보 게시글 (예시 더미) ---------- */
 export const BenefitTab = () => {
-    const dummy = [
-        {
-            id: 101,
-            title: "가을 축제 부스 혜택 안내",
-            image: Banner2,
-            target: "성신여대 재학생",
-            period: "2025.09.20 ~ 2025.10.05",
-            benefit: "게임 참여 시 굿즈 증정",
-            bookmarkCount: 9,
-            bookmarked: false,
-            dday: 12,
-            negotiable: { target: true, period: true, benefit: true },
-        },
-        {
-            id: 102,
-            title: "총학 특별 쿠폰 배포",
-            image: Banner1,
-            target: "학생증 소지자",
-            period: "2025.09.01 ~ 2025.09.30",
-            benefit: "제휴 매장 10% 쿠폰",
-            bookmarkCount: 17,
-            bookmarked: true,
-            dday: 5,
-            negotiable: { target: false, period: false, benefit: true },
-        },
-    ];
-    return <CardGrid initial={dummy} />;
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [posts, setPosts] = useState([]);
+
+    const onToggleBookmark = (id) => {
+        setPosts(prev =>
+            prev.map(p =>
+                p.id === id
+                    ? { ...p, bookmarked: !p.bookmarked, bookmarkCount: Math.max(0, (p.bookmarkCount ?? 0) + (p.bookmarked ? -1 : 1)) }
+                    : p
+            )
+        );
+    };
+
+    React.useEffect(() => {
+        const controller = new AbortController();
+        const fetchMine = async () => {
+            setLoading(true);
+            setErrorMsg('');
+            try {
+                const params = new URLSearchParams();
+                params.set('type', 'PROMOTION');
+                params.set('userId', '1');
+
+                const res = await fetch(`${API_BASE}/promotion/mine?${params.toString()}`, {
+                    signal: controller.signal,
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+
+                if (data?.error || data?.isSuccess === false) {
+                    throw new Error(data?.message || data?.error?.message || '목록을 가져오지 못했습니다.');
+                }
+
+                const list = Array.isArray(data?.result) ? data.result : [];
+                const normalized = list
+                    .filter(item => item?.status === '' || item?.status === 'DRAFT')
+                    .map(item => ({
+                        id: item.postId,
+                        title: item.title,
+                        image: item.postImage || Banner2, // 없으면 배너 대체
+                        target: item.target,
+                        period: `${item.startDate || ''} ~ ${item.endDate || ''}`,
+                        benefit: item.benefit,
+                        bookmarkCount: item.bookmarkCount ?? 0,
+                        bookmarked: false,
+                        dday: calcDDay(item.exposureEndDate, item.endDate),
+                        negotiable: {}, // 명세엔 협의 가능 필드 없음
+                        raw: item,
+                    }));
+
+                setPosts(normalized);
+            } catch (err) {
+                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) return;
+                setErrorMsg(err?.message || '목록을 가져오지 못했습니다.');
+                setPosts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMine();
+        return () => controller.abort();
+    }, []);
+
+    if (loading) {
+        return <div className="category_content"><div className="loading">불러오는 중...</div></div>;
+    }
+    if (errorMsg) {
+        return <div className="category_content"><div className="error">{errorMsg}</div></div>;
+    }
+
+    return <CardGrid posts={posts} onToggleBookmark={onToggleBookmark} />;
 };
 
 const WriteHome = () => {
@@ -238,7 +312,7 @@ const WriteHome = () => {
                                 <img src={step2} alt="" />
                                 <p>제휴 맺기</p>
                             </button>
-                            <button className="list2">
+                            <button className="list2" onClick={() => navigate("/proceed")}>
                                 <img src={step3} alt="" />
                                 <p>진행하기</p>
                             </button>
