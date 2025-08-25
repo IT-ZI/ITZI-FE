@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Banner1 from '../../assets/img/coop_banner_1.png';  // TODO: 추후 slick-dot 없는 제휴를 잇지 버전으로 이미지 파일 변경 필요
-import Banner2 from '../../assets/img/coop_banner_2.png';  // TODO: 추후 slick-dot 없는 제휴를 잇지 버전으로 이미지 파일 변경 필요
+import Banner1 from '../../assets/img/coop_banner_1.png';
+import Banner2 from '../../assets/img/coop_banner_2.png';
 import SearchIcon from '../../assets/img/ic_search.svg';
 import SearchingIcon from '../../assets/img/ic_searching.svg';
 import BookmarkOn from '../../assets/img/ic_bookmark_on.svg';
@@ -12,12 +12,38 @@ import PrevIcon from '../../assets/img/ic_prev.svg';
 import NextIcon from '../../assets/img/ic_next.svg';
 import CaretDown from '../../assets/img/ic_caret_down.svg';
 
+const API_BASE = 'https://api.onlyoneprivate.store';
+const PAGE_SIZE = 12;
+
+const ORDER_BY_MAP = {
+  '마감임박순': 'CLOSING',
+  '인기순': 'POPULAR',
+  '최신순': 'LATEST',
+  '오래된순': 'OLDEST',
+};
+
+const TAB_TO_ORGTYPE = {
+  '매장': 'STORE',
+  '학교': 'SCHOOL',
+  '학과': 'DEPARTMENT',
+  '동아리/소모임': 'CLUB',
+};
+
+const FILTER_TO_KEYWORD = {
+  '할인 혜택': '할인',
+  '간식 행사': '간식',
+  '쿠폰 제공': '쿠폰',
+  '체험 부스': '체험',
+  '굿즈 증정': '굿즈',
+  '설문 참여 리워드': '설문',
+  // '협찬'은 명세상 benefit 키워드로 보장되지 않아 서버 전송 생략
+};
+
 const SortDropdown = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const options = ['마감임박순', '인기순', '최신순', '오래된순'];
 
-  // 바깥 클릭 닫기
   useEffect(() => {
     const onClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -26,7 +52,6 @@ const SortDropdown = ({ value, onChange }) => {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
-  // Esc 키 닫기
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') setOpen(false);
@@ -35,7 +60,6 @@ const SortDropdown = ({ value, onChange }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
-  // 포커스가 드롭다운 컨테이너 밖으로 나가면 닫기
   const handleBlur = (e) => {
     if (!ref.current?.contains(e.relatedTarget)) setOpen(false);
   };
@@ -44,7 +68,7 @@ const SortDropdown = ({ value, onChange }) => {
     <div className="sort_dropdown" ref={ref} onBlur={handleBlur}>
       <button
         className="sort_button"
-        onClick={() => setOpen(true)}         // <-- 토글이 아닌 항상 열기
+        onClick={() => setOpen(true)}
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -80,211 +104,204 @@ const SortDropdown = ({ value, onChange }) => {
 };
 
 const Cooperation = () => {
-  const userName = "시현";
-  const userUniv = "성신여자대학교";
+  const userName = '시현';
+  const userUniv = '성신여자대학교';
 
-  // 탭 상태 (기본값: 전체)
-  const [activeTab, setActiveTab] = useState("전체");
+  const [activeTab, setActiveTab] = useState('전체');
 
-  // ▼ 추가: 검색 상태
-  const [searchTerm, setSearchTerm] = useState("");     // 입력 중 텍스트
-  const [query, setQuery] = useState("");               // 확정된 검색어(엔터 후)
-  const [searching, setSearching] = useState(false);    // 입력/포커스 중인지
+  const [searchTerm, setSearchTerm] = useState('');
+  const [query, setQuery] = useState('');
+  const [searching, setSearching] = useState(false);
   const inputRef = useRef(null);
 
-  // 입력 핸들러
   const onChangeSearch = (e) => {
     setSearchTerm(e.target.value);
-    setSearching(true);           // 타이핑 시작 → searching 켜기
+    setSearching(true);
   };
-
-  // 엔터/ESC 처리
   const onKeyDownSearch = (e) => {
-    if (e.key === "Enter") {
-      setQuery(searchTerm.trim()); // 검색어 확정
-      setSearching(false);         // UI는 기본 상태로 복귀
-      inputRef.current?.blur();    // 포커스 아웃
+    if (e.key === 'Enter') {
+      setQuery(searchTerm.trim());
+      setSearching(false);
+      inputRef.current?.blur();
     }
-    if (e.key === "Escape") {
+    if (e.key === 'Escape') {
       setSearching(false);
       inputRef.current?.blur();
     }
   };
-
-  // 포커스/블러 시점
   const onFocusSearch = () => setSearching(true);
   const onBlurSearch = () => setSearching(false);
 
-  const tabs = ["전체", "매장", "학교", "학과", "동아리/소모임"];
+  const tabs = ['전체', '매장', '학교', '학과', '동아리/소모임'];
 
-  // 정렬 (기본: 마감임박순)
   const [sortBy, setSortBy] = useState('마감임박순');
 
-  // 게시물 필터링
   const filterOptions = [
     '전체',
-    '제휴 모집 중',
-    '제휴 요청 가능',
+    '제휴 모집 중',    // 서버 전송X (type=RECRUITING로 이미 필터됨)
+    '제휴 요청 가능',  // 서버 전송X (명세 없음)
     '간식 행사',
-    '협찬',
-    '행사/이벤트',
+    '협찬',           // 서버 전송X (명세상 benefit 키워드 불명)
+    '행사/이벤트',     // 서버 전송X (명세 없음)
     '할인 혜택',
     '쿠폰 제공',
     '체험 부스',
     '굿즈 증정',
     '설문 참여 리워드',
   ];
-
-  // 기본값: 전체
   const [selectedFilters, setSelectedFilters] = useState(['전체']);
 
   const handleFilterClick = (opt) => {
     if (opt === '전체') {
-      // 전체 클릭 시 → 전체만 남기고 다른 필터는 다 해제
       setSelectedFilters(['전체']);
     } else {
       let updated;
       if (selectedFilters.includes(opt)) {
-        // 이미 선택된 경우 → 해제
         updated = selectedFilters.filter((f) => f !== opt);
       } else {
-        // 새로 선택된 경우 → 추가
         updated = [...selectedFilters.filter((f) => f !== '전체'), opt];
       }
-
-      // 아무것도 안 남으면 "전체" 자동 선택
-      if (updated.length === 0) {
-        updated = ['전체'];
-      }
-
+      if (updated.length === 0) updated = ['전체'];
       setSelectedFilters(updated);
     }
   };
 
-  // ① 더미 데이터 (실데이터로 교체만 하면 동작)
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "성신여대 X 카페 스피호",
-      image: Banner1,
-      target: "성신여대 재학생",
-      period: "2025.09.01 ~ 2025.12.31",
-      benefit: "아메리카노 20% 할인",
-      bookmarkCount: 12,
-      bookmarked: false,
-      dday: 20,
-      negotiable: { target: false, period: true, benefit: true }
-    },
-    {
-      id: 2,
-      title: "성신여대 X 체리블라썸나이스",
-      image: Banner2,
-      target: "성신여대 학생증 소지자",
-      period: "2025.09.10 ~ 2025.12.31",
-      benefit: "디저트 세트 15% 할인",
-      bookmarkCount: 8,
-      bookmarked: true,
-      dday: 50,
-      negotiable: { target: true, period: true, benefit: true }
-    },
-    {
-      id: 3,
-      title: "성신여대 X 빵굽는하루",
-      image: Banner1,
-      target: "성신여대 재학생",
-      period: "2025.08.20 ~ 2025.10.30",
-      benefit: "모든 빵 10% 할인",
-      bookmarkCount: 5,
-      bookmarked: false,
-      dday: 3,
-      negotiable: { target: true, period: true, benefit: true }
-    },
-    {
-      id: 4,
-      title: "성신여대 X 라떼하우스",
-      image: Banner2,
-      target: "성신여대 학생/교직원",
-      period: "2025.09.15 ~ 2025.11.30",
-      benefit: "라떼 메뉴 무료 사이즈업",
-      bookmarkCount: 15,
-      bookmarked: true,
-      dday: 15,
-      negotiable: { target: true, period: true, benefit: false }
-    },
-    {
-      id: 5,
-      title: "성신여대 X 스윗티드링크",
-      image: Banner1,
-      target: "성신여대 재학생",
-      period: "2025.09.01 ~ 2025.12.15",
-      benefit: "음료 1+1 이벤트",
-      bookmarkCount: 20,
-      bookmarked: false,
-      dday: 30,
-      negotiable: { target: false, period: true, benefit: true }
-    }
-  ]);
+  // ---- 서버 데이터 상태 ----
+  const [serverItems, setServerItems] = useState([]); // 표준화된 포맷으로 보관
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  // 북마크 토글 핸들러
-  const toggleBookmark = (id) => {
-    setPosts(prev =>
-      prev.map(p => {
-        if (p.id !== id) return p;
-        const turningOn = !p.bookmarked;
-        return {
-          ...p,
-          bookmarked: turningOn,
-          bookmarkCount: Math.max(0, p.bookmarkCount + (turningOn ? 1 : -1)),
-        };
-      })
-    );
-  };
-
-  // 유틸
-  const parsePeriodEnd = (period) => {
-    // "YYYY.MM.DD ~ YYYY.MM.DD"의 끝 날짜를 Date로
-    const end = period.split('~')[1]?.trim()?.replaceAll('.', '-');
-    return end ? new Date(end) : new Date();
-  };
-
-  // ② 정렬 + 필터 + 탭 적용
-  const filteredByTab = posts.filter(p => {
-    if (activeTab === '전체') return true;
-    if (activeTab === '대학생') return p.audience === '대학생';
-    // 학교 탭
-    return p.univ === activeTab;
-  });
-
-  const filteredByCategory = filteredByTab.filter(p => {
-    if (selectedFilters.includes('전체')) return true;
-    return selectedFilters.includes(p.category);
-  });
-
-  const sorted = [...filteredByCategory].sort((a, b) => {
-    switch (sortBy) {
-      case '마감임박순': // D-day 오름차순
-        return a.dday - b.dday;
-      case '인기순':      // 북마크 내림차순
-        return b.bookmarkCount - a.bookmarkCount;
-      case '최신순':      // 기간 종료일 최신순(가까운 과거/미래를 최신으로 간주 가능)
-        return parsePeriodEnd(b.period) - parsePeriodEnd(a.period);
-      case '오래된순':
-        return parsePeriodEnd(a.period) - parsePeriodEnd(b.period);
-      default:
-        return 0;
-    }
-  });
-
-  // 페이지네이션 상태
-  const PAGE_SIZE = 12;               // 3 x 4
+  // 페이지 (UI는 1-base, 서버는 0-base)
   const [page, setPage] = useState(1);
 
-  // 탭/정렬/필터가 바뀌면 페이지 1로 리셋
+  // 탭/정렬/필터 변경 시 페이지 리셋
   useEffect(() => {
     setPage(1);
   }, [activeTab, selectedFilters, sortBy]);
 
-  // 페이지 번호 리스트(간단한 ... 처리)
+  // 서버 파라미터 생성
+  const orderByParam = ORDER_BY_MAP[sortBy] ?? 'CLOSING';
+  const orgTypeParam = TAB_TO_ORGTYPE[activeTab]; // undefined면 전체
+
+  // 서버에 보낼 filters (benefit 키워드만)
+  const benefitKeywords = useMemo(() => {
+    if (selectedFilters.includes('전체')) return [];
+    return selectedFilters
+      .map((f) => FILTER_TO_KEYWORD[f])
+      .filter(Boolean); // 매핑된 것만
+  }, [selectedFilters]);
+
+  // 서버 호출
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchList = async () => {
+      setLoading(true);
+      setErrorMsg('');
+
+      try {
+        const params = new URLSearchParams();
+        params.set('type', 'RECRUITING');
+        params.set('orderBy', orderByParam);
+        params.set('page', String(Math.max(0, page - 1))); // 0-based
+        params.set('size', String(PAGE_SIZE));
+        if (orgTypeParam) params.set('orgType', orgTypeParam);
+        // filters는 복수 전송
+        benefitKeywords.forEach((kw) => params.append('filters', kw));
+
+        const url = `${API_BASE}/recruiting?${params.toString()}`;
+        const res = await fetch(url, { signal: controller.signal });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        if (data?.isSuccess === false || data?.error) {
+          throw new Error(data?.message || data?.error?.message || '목록을 가져오지 못했습니다.');
+        }
+
+        // 응답 형태: result가 배열이거나, 페이지 객체일 수 있음
+        let content = [];
+        let totalPagesFromServer = 1;
+
+        if (Array.isArray(data?.result)) {
+          // 참고용 응답 (배열)
+          content = data.result;
+          totalPagesFromServer = 1;
+        } else if (data?.result?.content) {
+          // 페이지 객체
+          content = data.result.content;
+          totalPagesFromServer = Math.max(1, data.result.totalPages ?? 1);
+        } else {
+          // 방어
+          content = [];
+          totalPagesFromServer = 1;
+        }
+
+        // 표준화: UI가 쓰는 필드로 변환
+        const normalized = content.map((item) => {
+          const exposureEnd = item.exposureEndDate || item.endDate; // D-day 기준
+          const dday = (() => {
+            if (!exposureEnd) return 0;
+            const end = new Date(exposureEnd);
+            const today = new Date();
+            // 시간 제거 (현지 자정 기준)
+            end.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            const diff = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+            return diff;
+          })();
+
+          return {
+            id: item.postId,
+            title: item.title,
+            image: item.postImageUrl || (Math.random() > 0.5 ? Banner1 : Banner2), // 임시 대체
+            target: item.target,
+            period: `${item.startDate || ''} ~ ${item.endDate || ''}`,
+            benefit: item.benefit,
+            bookmarkCount: item.bookmarkCount ?? 0,
+            bookmarked: false, // 토글 API 미정 → 로컬 제어
+            dday,
+            negotiable: {
+              target: !!item.targetNegotiable,
+              period: !!item.periodNegotiable,
+              benefit: !!item.benefitNegotiable,
+            },
+            raw: item,
+          };
+        });
+
+        setServerItems(normalized);
+        setTotalPages(totalPagesFromServer);
+      } catch (err) {
+        // 의도된 취소는 에러로 취급하지 않기
+        if (err?.name === 'AbortError' || err?.message?.includes('aborted')) {
+          return;
+        }
+        setErrorMsg(err?.message || '목록을 가져오지 못했습니다.');
+        setServerItems([]);
+        setTotalPages(1);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchList();
+    return () => controller.abort();
+  }, [orderByParam, orgTypeParam, benefitKeywords, page]);
+
+  // 검색어가 있으면 클라이언트 필터링 (명세에 검색 파라미터가 없으므로)
+  const filteredByQuery = useMemo(() => {
+    if (!query) return serverItems;
+    const q = query.toLowerCase();
+    return serverItems.filter((p) =>
+      [p.title, p.benefit, p.target].some((v) => (v || '').toLowerCase().includes(q))
+    );
+  }, [serverItems, query]);
+
+  // 현재 페이지 UI용 숫자 목록 (서버 totalPages 사용)
   const getPageNumbers = (current, total) => {
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     const result = [1];
@@ -297,25 +314,29 @@ const Cooperation = () => {
     return result;
   };
 
-  // 전체 개수/페이지 수
-  const totalItems = sorted.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-
-  // 현재 페이지 아이템
-  const start = (safePage - 1) * PAGE_SIZE;
-  const toRender = sorted.slice(start, start + PAGE_SIZE);
-
   const listRef = useRef(null);
-
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [safePage]);
+  }, [page]);
+
+  const toggleBookmark = (id) => {
+    setServerItems((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
+        const turningOn = !p.bookmarked;
+        return {
+          ...p,
+          bookmarked: turningOn,
+          bookmarkCount: Math.max(0, (p.bookmarkCount ?? 0) + (turningOn ? 1 : -1)),
+        };
+      })
+    );
+  };
 
   return (
-    <div className='Cooperation_wrap'>
+    <div className="Cooperation_wrap">
       {/* 이미지 배너 */}
       <div className="banner_wrap">
         <Slider
@@ -323,7 +344,7 @@ const Cooperation = () => {
           arrows={false}
           infinite
           autoplay
-          autoplaySpeed={2000}   // 2초
+          autoplaySpeed={2000}
           speed={500}
           slidesToShow={1}
           slidesToScroll={1}
@@ -363,7 +384,7 @@ const Cooperation = () => {
           {tabs.map((tab) => (
             <button
               key={tab}
-              className={`tab_btn ${activeTab === tab ? "active" : ""}`}
+              className={`tab_btn ${activeTab === tab ? 'active' : ''}`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -378,7 +399,7 @@ const Cooperation = () => {
       {/* 게시물 필터링 */}
       <div className="post_filters">
         <div className="filter_row">
-          <span style={{ marginRight: 8 }}></span>
+          <span style={{ marginRight: 8 }} />
           <div className="filter_chips">
             {filterOptions.map((opt) => {
               const active = selectedFilters.includes(opt);
@@ -396,82 +417,90 @@ const Cooperation = () => {
         </div>
       </div>
 
-      {/* 선택된 탭에 따라 콘텐츠 표시 */}
-      {/* <div className="category_content">
-        {activeTab === "전체" && <p>전체 혜택 목록</p>}
-        {activeTab === "대학생" && <p>대학생 혜택 목록</p>}
-        {activeTab === "성신여자대학교" && <p>성신여자대학교 혜택 목록</p>}
-      </div> */}
+      {/* 서버/검색 상태 */}
       <div className="category_content" ref={listRef}>
-        <div className="grid">
-          {toRender.length === 0 ? (
-            <div className="no_posts">표시할 혜택이 없습니다.</div>
-          ) : (
-            toRender.map(post => (
-              <div key={post.id} className="card">
-                <div className="thumb">
-                  <div className="img_wrap">
-                    <img src={post.image} alt={post.title} />
-                  </div>
-                  <div className="badge">D-{post.dday} 제휴 모집 중</div>
-                </div>
+        {loading && <div className="loading">불러오는 중...</div>}
+        {errorMsg && !loading && <div className="error">{errorMsg}</div>}
 
-                <div className="card_body">
-                  <div className="title_row">
-                    <div className="title">{post.title}</div>
-                    <div className="bookmark_wrap">
-                      <span className="bookmark_count">{post.bookmarkCount}</span>
-                      <button className="bookmark_btn" onClick={() => toggleBookmark(post.id)}>
-                        <img src={post.bookmarked ? BookmarkOn : BookmarkOff} alt="bookmark" />
-                      </button>
+        {!loading && !errorMsg && (
+          <div className="grid">
+            {filteredByQuery.length === 0 ? (
+              <div className="no_posts">표시할 혜택이 없습니다.</div>
+            ) : (
+              filteredByQuery.map((post) => (
+                <div key={post.id} className="card">
+                  <div className="thumb">
+                    <div className="img_wrap">
+                      <img src={post.image} alt={post.title} />
+                    </div>
+                    <div className="badge">
+                      D-{post.dday} 제휴 모집 중
                     </div>
                   </div>
 
-                  <div className="row">
-                    <span className="label">대상</span>
-                    <span className="section">|</span>
-                    <span>{post.target}</span>
-                    {post.negotiable?.target && <span className="tag">협의 가능</span>}
-                  </div>
-                  <div className="row">
-                    <span className="label">기간</span>
-                    <span className="section">|</span>
-                    <span>{post.period}</span>
-                    {post.negotiable?.period && <span className="tag">협의 가능</span>}
-                  </div>
-                  <div className="row">
-                    <span className="label">혜택</span>
-                    <span className="section">|</span>
-                    <span>{post.benefit}</span>
-                    {post.negotiable?.benefit && <span className="tag">협의 가능</span>}
+                  <div className="card_body">
+                    <div className="title_row">
+                      <div className="title">{post.title}</div>
+                      <div className="bookmark_wrap">
+                        <span className="bookmark_count">{post.bookmarkCount}</span>
+                        <button
+                          className="bookmark_btn"
+                          onClick={() => toggleBookmark(post.id)}
+                        >
+                          <img
+                            src={post.bookmarked ? BookmarkOn : BookmarkOff}
+                            alt="bookmark"
+                          />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <span className="label">대상</span>
+                      <span className="section">|</span>
+                      <span>{post.target}</span>
+                      {post.negotiable?.target && <span className="tag">협의 가능</span>}
+                    </div>
+                    <div className="row">
+                      <span className="label">기간</span>
+                      <span className="section">|</span>
+                      <span>{post.period}</span>
+                      {post.negotiable?.period && <span className="tag">협의 가능</span>}
+                    </div>
+                    <div className="row">
+                      <span className="label">혜택</span>
+                      <span className="section">|</span>
+                      <span>{post.benefit}</span>
+                      {post.negotiable?.benefit && <span className="tag">협의 가능</span>}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
-      {/* 페이지네이션 */}
+      {/* 페이지네이션 (서버 totalPages 사용) */}
       <div className="pagination">
         <button
           className="icon_btn prev"
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={safePage === 1}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
           aria-label="이전 페이지"
         >
           <img src={PrevIcon} alt="" />
         </button>
 
-        {getPageNumbers(safePage, totalPages).map((n, idx) =>
+        {getPageNumbers(page, totalPages).map((n, idx) =>
           n === '…' ? (
             <span key={`ellipsis-${idx}`} className="ellipsis">…</span>
           ) : (
             <button
               key={n}
-              className="page_btn"
+              className={`page_btn ${page === n ? 'active' : ''}`}
               onClick={() => setPage(n)}
-              aria-current={safePage === n ? 'page' : undefined}
+              aria-current={page === n ? 'page' : undefined}
               aria-label={`${n} 페이지로 이동`}
             >
               {n}
@@ -481,15 +510,15 @@ const Cooperation = () => {
 
         <button
           className="icon_btn next"
-          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-          disabled={safePage === totalPages}
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
           aria-label="다음 페이지"
         >
           <img src={NextIcon} alt="" />
         </button>
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default Cooperation
+export default Cooperation;

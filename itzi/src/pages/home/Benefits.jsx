@@ -12,6 +12,55 @@ import PrevIcon from '../../assets/img/ic_prev.svg';
 import NextIcon from '../../assets/img/ic_next.svg';
 import CaretDown from '../../assets/img/ic_caret_down.svg';
 
+const API_BASE = import.meta?.env?.VITE_API_BASE ?? "";
+
+// ---- UI → API 파라미터 매핑 ----
+const ORDER_MAP = {
+  "마감임박순": "CLOSING",  // exposureEndDate 오름차순
+  "인기순": "POPULAR",     // bookmarkCount 내림차순
+  "최신순": "LATEST",      // publishedAt DESC
+  "오래된순": "OLDEST",    // (promotion에선 보통 안 씀, 있으면 그대로 전달)
+};
+
+// 우리 UI 카테고리 → API enum
+const CATEGORY_MAP = {
+  "음식점 / 카페": "FOOD",
+  "의류 / 패션": "FASHION",
+  "뷰티 / 미용": "BEAUTY",
+  "헬스 / 피트니스": "HEALTH",
+  "문구 / 서점": "BOOK",
+  "생활 / 잡화": "LIVING",
+  "병원 / 약국": "HOSPITAL",
+  "전자 / IT": "IT",
+  "교통 / 이동": "TRANSPORTATION",
+  "기타": "ETC",
+};
+
+// D-day 계산 (endDate 기준)
+const ddayFrom = (yyyyMmDd) => {
+  if (!yyyyMmDd) return 0;
+  const end = new Date(yyyyMmDd + "T00:00:00");
+  const now = new Date();
+  const ms = end.setHours(0, 0, 0, 0) - now.setHours(0, 0, 0, 0);
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+};
+
+// API → 카드 데이터 변환
+const mapItemToPost = (item) => ({
+  id: item.postId,
+  title: item.title,
+  target: item.target,
+  period: `${item.startDate} ~ ${item.endDate}`,
+  benefit: item.benefit,
+  dday: ddayFrom(item.endDate),            // 배지용
+  bookmarked: false,                       // 서버에 없으면 로컬 기준
+  bookmarkCount: item.bookmarkCount ?? 0,  // 정렬 POPULAR에 사용됨
+  category: item.category ?? null,
+  image: item.postImageUrl,
+  audience: "대학생",                      // UI 탭 호환용(없으면 임시)
+  univ: null,                              // UI 탭 호환용(없으면 null)
+});
+
 const SortDropdown = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -161,37 +210,100 @@ const Benefits = () => {
     }
   };
 
-  // ① 더미 데이터 (실데이터로 교체만 하면 동작)
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: '성신여대 X 라라면가 - 상권 제휴',
-      target: '성신여대 재적생 및 교직원 대상',
-      period: '2025.07.01 ~ 2025.08.31',
-      benefit: '매장 식사 시, 음료 1인당 1캔 무료 제공',
-      dday: 21,
-      bookmarked: true,
-      bookmarkCount: 80,        // ← 추가
-      category: '음식점 / 카페',
-      image: Banner1,
-      audience: '대학생',
-      univ: '성신여자대학교',
-    },
-    {
-      id: 2,
-      title: '헬스PT 할인 이벤트',
-      target: '대학생 누구나',
-      period: '2025.07.10 ~ 2025.09.15',
-      benefit: '3개월 등록 시 20% 할인',
-      dday: 45,
-      bookmarked: false,
-      bookmarkCount: 12,        // ← 추가
-      category: '헬스 / 피트니스',
-      image: Banner2,
-      audience: '대학생',
-      univ: null,
-    },
-  ]);
+  // // ① 더미 데이터 (실데이터로 교체만 하면 동작)
+  // const [posts, setPosts] = useState([
+  //   {
+  //     id: 1,
+  //     title: '성신여대 X 라라면가 - 상권 제휴',
+  //     target: '성신여대 재적생 및 교직원 대상',
+  //     period: '2025.07.01 ~ 2025.08.31',
+  //     benefit: '매장 식사 시, 음료 1인당 1캔 무료 제공',
+  //     dday: 21,
+  //     bookmarked: true,
+  //     bookmarkCount: 80,        // ← 추가
+  //     category: '음식점 / 카페',
+  //     image: Banner1,
+  //     audience: '대학생',
+  //     univ: '성신여자대학교',
+  //   },
+  //   {
+  //     id: 2,
+  //     title: '헬스PT 할인 이벤트',
+  //     target: '대학생 누구나',
+  //     period: '2025.07.10 ~ 2025.09.15',
+  //     benefit: '3개월 등록 시 20% 할인',
+  //     dday: 45,
+  //     bookmarked: false,
+  //     bookmarkCount: 12,        // ← 추가
+  //     category: '헬스 / 피트니스',
+  //     image: Banner2,
+  //     audience: '대학생',
+  //     univ: null,
+  //   },
+  // ]);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // 선택된 필터들을 API filters 파라미터로 변환
+  const buildFiltersParams = (selectedFilters) => {
+    const params = [];
+    if (!selectedFilters || selectedFilters.includes("전체")) return params;
+    selectedFilters.forEach((label) => {
+      const enumVal = CATEGORY_MAP[label];
+      if (enumVal) params.push(["filters", enumVal]);  // ?filters=FOOD&filters=ETC ...
+    });
+    return params;
+  };
+
+  useEffect(() => {
+  let aborted = false;
+  const controller = new AbortController();
+
+  const fetchList = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // 하드코딩된 URL
+      const url = `https://api.onlyoneprivate.store/promotion/all?orderBy=POPULAR&filters=FOOD`;
+      console.debug("[GET]", url);
+
+      const res = await fetch(url, {
+        signal: controller.signal,
+        headers: { Accept: "application/json" },
+      });
+
+      if (!res.ok) {
+        const bodyText = await res.text();
+        throw new Error(`HTTP ${res.status} ${res.statusText} — ${bodyText.slice(0, 200)}`);
+      }
+
+      const data = await res.json();
+      if (aborted) return;
+
+      if (!data?.isSuccess || !Array.isArray(data?.result)) {
+        throw new Error(data?.error?.message || "목록을 가져오지 못했습니다.");
+      }
+
+      const mapped = data.result.map(mapItemToPost);
+      setPosts(mapped);
+      setPage(1);
+    } catch (e) {
+      if (aborted) return;
+      setError(e.message || "목록을 가져오지 못했습니다.");
+      setPosts([]);
+    } finally {
+      if (!aborted) setLoading(false);
+    }
+  };
+
+  fetchList();
+  return () => {
+    aborted = true;
+    controller.abort();
+  };
+}, []); // ✅ 정렬/필터 상태 무시, 최초 1회만 호출
 
   // 북마크 토글 핸들러
   const toggleBookmark = (id) => {
@@ -371,50 +483,56 @@ const Benefits = () => {
         {activeTab === "성신여자대학교" && <p>성신여자대학교 혜택 목록</p>}
       </div> */}
       <div className="category_content" ref={listRef}>
-        <div className="grid">
-          {toRender.length === 0 ? (
-            <div className="no_posts">표시할 혜택이 없습니다.</div>
-          ) : (
-            toRender.map(post => (
-              <div key={post.id} className="card">
-                <div className="thumb">
-                  <div className="img_wrap">
-                    <img src={post.image} alt={post.title} />
+        {loading ? (
+          <div className="loading">불러오는 중…</div>
+        ) : error ? (
+          <div className="error">{error}</div>
+        ) : (
+          <div className="grid">
+            {toRender.length === 0 ? (
+              <div className="no_posts">표시할 혜택이 없습니다.</div>
+            ) : (
+              toRender.map(post => (
+                <div key={post.id} className="card">
+                  <div className="thumb">
+                    <div className="img_wrap">
+                      <img src={post.image} alt={post.title} />
+                    </div>
+                    <div className="badge">D-{post.dday}</div>
                   </div>
-                  <div className="badge">D-{post.dday}</div>
-                </div>
 
-                <div className="card_body">
-                  <div className="title_row">
-                    <div className="title">{post.title}</div>
-                    <div className="bookmark_wrap">
-                      <span className="bookmark_count">{post.bookmarkCount}</span>
-                      <button className="bookmark_btn" onClick={() => toggleBookmark(post.id)}>
-                        <img src={post.bookmarked ? BookmarkOn : BookmarkOff} alt="bookmark" />
-                      </button>
+                  <div className="card_body">
+                    <div className="title_row">
+                      <div className="title">{post.title}</div>
+                      <div className="bookmark_wrap">
+                        <span className="bookmark_count">{post.bookmarkCount}</span>
+                        <button className="bookmark_btn" onClick={() => toggleBookmark(post.id)}>
+                          <img src={post.bookmarked ? BookmarkOn : BookmarkOff} alt="bookmark" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <span className="label">대상</span>
+                      <span className="section">|</span>
+                      <span>{post.target}</span>
+                    </div>
+                    <div className="row">
+                      <span className="label">기간</span>
+                      <span className="section">|</span>
+                      <span>{post.period}</span>
+                    </div>
+                    <div className="row">
+                      <span className="label">혜택</span>
+                      <span className="section">|</span>
+                      <span>{post.benefit}</span>
                     </div>
                   </div>
-
-                  <div className="row">
-                    <span className="label">대상</span>
-                    <span className="section">|</span>
-                    <span>{post.target}</span>
-                  </div>
-                  <div className="row">
-                    <span className="label">기간</span>
-                    <span className="section">|</span>
-                    <span>{post.period}</span>
-                  </div>
-                  <div className="row">
-                    <span className="label">혜택</span>
-                    <span className="section">|</span>
-                    <span>{post.benefit}</span>
-                  </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {/* 페이지네이션 */}
