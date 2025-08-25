@@ -12,12 +12,14 @@ import PrevIcon from '../../assets/img/ic_prev.svg';
 import NextIcon from '../../assets/img/ic_next.svg';
 import CaretDown from '../../assets/img/ic_caret_down.svg';
 
+// ✅ 최소추가: 공용 스크랩 저장소 유틸
+import { getAll, upsert, toggleScrap, subscribe } from '../../utils/scrapStore';
+
 const SortDropdown = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const options = ['마감임박순', '인기순', '최신순', '오래된순'];
 
-  // 바깥 클릭 닫기
   useEffect(() => {
     const onClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -26,7 +28,6 @@ const SortDropdown = ({ value, onChange }) => {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
-  // Esc 키 닫기
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') setOpen(false);
@@ -35,7 +36,6 @@ const SortDropdown = ({ value, onChange }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
-  // 포커스가 드롭다운 컨테이너 밖으로 나가면 닫기
   const handleBlur = (e) => {
     if (!ref.current?.contains(e.relatedTarget)) setOpen(false);
   };
@@ -44,7 +44,7 @@ const SortDropdown = ({ value, onChange }) => {
     <div className="sort_dropdown" ref={ref} onBlur={handleBlur}>
       <button
         className="sort_button"
-        onClick={() => setOpen(true)}         // <-- 토글이 아닌 항상 열기
+        onClick={() => setOpen(true)}
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -83,44 +83,36 @@ const Cooperation = () => {
   const userName = "시현";
   const userUniv = "성신여자대학교";
 
-  // 탭 상태 (기본값: 전체)
   const [activeTab, setActiveTab] = useState("전체");
 
-  // ▼ 추가: 검색 상태
-  const [searchTerm, setSearchTerm] = useState("");     // 입력 중 텍스트
-  const [query, setQuery] = useState("");               // 확정된 검색어(엔터 후)
-  const [searching, setSearching] = useState(false);    // 입력/포커스 중인지
+  // ▼ 검색 UI
+  const [searchTerm, setSearchTerm] = useState("");
+  const [query, setQuery] = useState("");
+  const [searching, setSearching] = useState(false);
   const inputRef = useRef(null);
 
-  // 입력 핸들러
   const onChangeSearch = (e) => {
     setSearchTerm(e.target.value);
-    setSearching(true);           // 타이핑 시작 → searching 켜기
+    setSearching(true);
   };
-
-  // 엔터/ESC 처리
   const onKeyDownSearch = (e) => {
     if (e.key === "Enter") {
-      setQuery(searchTerm.trim()); // 검색어 확정
-      setSearching(false);         // UI는 기본 상태로 복귀
-      inputRef.current?.blur();    // 포커스 아웃
+      setQuery(searchTerm.trim());
+      setSearching(false);
+      inputRef.current?.blur();
     }
     if (e.key === "Escape") {
       setSearching(false);
       inputRef.current?.blur();
     }
   };
-
-  // 포커스/블러 시점
   const onFocusSearch = () => setSearching(true);
   const onBlurSearch = () => setSearching(false);
 
   const tabs = ["전체", "매장", "학교", "학과", "동아리/소모임"];
 
-  // 정렬 (기본: 마감임박순)
   const [sortBy, setSortBy] = useState('마감임박순');
 
-  // 게시물 필터링
   const filterOptions = [
     '전체',
     '제휴 모집 중',
@@ -134,34 +126,24 @@ const Cooperation = () => {
     '굿즈 증정',
     '설문 참여 리워드',
   ];
-
-  // 기본값: 전체
   const [selectedFilters, setSelectedFilters] = useState(['전체']);
 
   const handleFilterClick = (opt) => {
     if (opt === '전체') {
-      // 전체 클릭 시 → 전체만 남기고 다른 필터는 다 해제
       setSelectedFilters(['전체']);
     } else {
       let updated;
       if (selectedFilters.includes(opt)) {
-        // 이미 선택된 경우 → 해제
         updated = selectedFilters.filter((f) => f !== opt);
       } else {
-        // 새로 선택된 경우 → 추가
         updated = [...selectedFilters.filter((f) => f !== '전체'), opt];
       }
-
-      // 아무것도 안 남으면 "전체" 자동 선택
-      if (updated.length === 0) {
-        updated = ['전체'];
-      }
-
+      if (updated.length === 0) updated = ['전체'];
       setSelectedFilters(updated);
     }
   };
 
-  // ① 더미 데이터 (실데이터로 교체만 하면 동작)
+  // 더미 데이터
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -225,33 +207,88 @@ const Cooperation = () => {
     }
   ]);
 
-  // 북마크 토글 핸들러
+  // ✅ 최소추가: 저장소 시드 + 외부 변경 구독 (최초 1회)
+  useEffect(() => {
+    // 1) 현재 카드들을 저장소에 업서트(초기 시드)
+    posts.forEach((p) => {
+      upsert({
+        id: p.id,
+        bookmarked: p.bookmarked,
+        bookmarkCount: p.bookmarkCount,
+        title: p.title,
+        image: p.image,
+        target: p.target,
+        period: p.period,
+        benefit: p.benefit,
+        dday: p.dday,
+      });
+    });
+
+    // 2) 저장소 상태로 로컬 posts 동기화
+    const store = getAll();
+    setPosts((prev) =>
+      prev.map((p) => {
+        const hit = store.find((x) => x.id === String(p.id));
+        return hit
+          ? {
+              ...p,
+              bookmarked: !!hit.scrab_done,
+              bookmarkCount:
+                typeof hit.scrab_count === 'number' ? hit.scrab_count : p.bookmarkCount,
+            }
+          : p;
+      })
+    );
+
+    // 3) 외부 페이지(Select 등)에서 변경되면 실시간 반영
+    const unsub = subscribe((list) => {
+      setPosts((prev) =>
+        prev.map((p) => {
+          const hit = list.find((x) => x.id === String(p.id));
+          return hit
+            ? {
+                ...p,
+                bookmarked: !!hit.scrab_done,
+                bookmarkCount:
+                  typeof hit.scrab_count === 'number' ? hit.scrab_count : p.bookmarkCount,
+              }
+            : p;
+        })
+      );
+    });
+
+    return () => unsub();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 최초 1회만
+
+  // ✅ 최소수정: 저장소 우선 토글 → 저장소값으로 로컬 반영
   const toggleBookmark = (id) => {
-    setPosts(prev =>
-      prev.map(p => {
+    toggleScrap(id);
+    const store = getAll();
+    setPosts((prev) =>
+      prev.map((p) => {
         if (p.id !== id) return p;
-        const turningOn = !p.bookmarked;
-        return {
-          ...p,
-          bookmarked: turningOn,
-          bookmarkCount: Math.max(0, p.bookmarkCount + (turningOn ? 1 : -1)),
-        };
+        const hit = store.find((x) => x.id === String(id));
+        return hit
+          ? {
+              ...p,
+              bookmarked: !!hit.scrab_done,
+              bookmarkCount:
+                typeof hit.scrab_count === 'number' ? hit.scrab_count : p.bookmarkCount,
+            }
+          : p;
       })
     );
   };
 
-  // 유틸
   const parsePeriodEnd = (period) => {
-    // "YYYY.MM.DD ~ YYYY.MM.DD"의 끝 날짜를 Date로
     const end = period.split('~')[1]?.trim()?.replaceAll('.', '-');
     return end ? new Date(end) : new Date();
   };
 
-  // ② 정렬 + 필터 + 탭 적용
   const filteredByTab = posts.filter(p => {
     if (activeTab === '전체') return true;
     if (activeTab === '대학생') return p.audience === '대학생';
-    // 학교 탭
     return p.univ === activeTab;
   });
 
@@ -262,11 +299,11 @@ const Cooperation = () => {
 
   const sorted = [...filteredByCategory].sort((a, b) => {
     switch (sortBy) {
-      case '마감임박순': // D-day 오름차순
+      case '마감임박순':
         return a.dday - b.dday;
-      case '인기순':      // 북마크 내림차순
+      case '인기순':
         return b.bookmarkCount - a.bookmarkCount;
-      case '최신순':      // 기간 종료일 최신순(가까운 과거/미래를 최신으로 간주 가능)
+      case '최신순':
         return parsePeriodEnd(b.period) - parsePeriodEnd(a.period);
       case '오래된순':
         return parsePeriodEnd(a.period) - parsePeriodEnd(b.period);
@@ -275,16 +312,11 @@ const Cooperation = () => {
     }
   });
 
-  // 페이지네이션 상태
-  const PAGE_SIZE = 12;               // 3 x 4
+  const PAGE_SIZE = 12;
   const [page, setPage] = useState(1);
 
-  // 탭/정렬/필터가 바뀌면 페이지 1로 리셋
-  useEffect(() => {
-    setPage(1);
-  }, [activeTab, selectedFilters, sortBy]);
+  useEffect(() => { setPage(1); }, [activeTab, selectedFilters, sortBy]);
 
-  // 페이지 번호 리스트(간단한 ... 처리)
   const getPageNumbers = (current, total) => {
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     const result = [1];
@@ -297,17 +329,14 @@ const Cooperation = () => {
     return result;
   };
 
-  // 전체 개수/페이지 수
   const totalItems = sorted.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
 
-  // 현재 페이지 아이템
   const start = (safePage - 1) * PAGE_SIZE;
   const toRender = sorted.slice(start, start + PAGE_SIZE);
 
   const listRef = useRef(null);
-
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -323,7 +352,7 @@ const Cooperation = () => {
           arrows={false}
           infinite
           autoplay
-          autoplaySpeed={2000}   // 2초
+          autoplaySpeed={2000}
           speed={500}
           slidesToShow={1}
           slidesToScroll={1}
@@ -396,12 +425,7 @@ const Cooperation = () => {
         </div>
       </div>
 
-      {/* 선택된 탭에 따라 콘텐츠 표시 */}
-      {/* <div className="category_content">
-        {activeTab === "전체" && <p>전체 혜택 목록</p>}
-        {activeTab === "대학생" && <p>대학생 혜택 목록</p>}
-        {activeTab === "성신여자대학교" && <p>성신여자대학교 혜택 목록</p>}
-      </div> */}
+      {/* 목록 */}
       <div className="category_content" ref={listRef}>
         <div className="grid">
           {toRender.length === 0 ? (

@@ -1,0 +1,467 @@
+.agreement-create-page {
+    min-height: 100%;
+    background: #F6F6FF;
+  
+    .page-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+  
+    .page-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 20px 0;
+      gap: 20px;
+      background: transparent;
+      margin-bottom: 10px; // main-container와의 간격 (정확히 10px)
+  
+      .back-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+  
+        img {
+          width: 8px;
+          height: 15px;
+        }
+  
+        &:hover {
+          background: rgba(255, 255, 255, 0.8);
+        }
+      }
+  
+      .page-title {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, 0%);
+        font-size: 22px;
+        font-weight: 700;
+        color: #1C2359;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+  
+      .signature-request-btn {
+        // nav에서 40.4px 아래, 오른쪽 정렬 위치 고정
+        position: absolute;
+        top: 40.4px;
+        transform: none;
+        right: 96px; // 오른쪽과 227 간격
+        margin-left: 0;
+        background: #7F86FF;
+        border: 1px solid #C2C3D9;
+        border-radius: 5px;
+        height: 30px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        font-size: 14px;
+        color: white;
+        cursor: pointer;
+  
+        &:hover { opacity: 0.9; }
+      }
+    }
+  
+    .main-content {
+      display: flex;
+      justify-content: center;
+      padding: 0;
+      margin-top: 0; // 헤더와 메인 컨테이너 간격은 헤더 margin-bottom으로만 관리 (10px)
+  
+      .content-container {
+        // 큰 전체 레이아웃
+        width: 1008px;
+        height: 1031px;
+        border-radius: 15px;
+        border: 1.5px solid #D9DAEC;
+        background: #FFFFFF;
+        padding: 0 40px 24px 40px;
+        box-sizing: border-box;
+        box-shadow: none;
+        margin: 0 auto;
+        position: relative;
+      }
+  
+      .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000000A6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 15px;
+  
+        .loading-content {
+          width: 178px;
+          height: 46px;
+          border-radius: 5px;
+          padding: 10px 20px;
+          gap: 10px;
+          background: rgba(255, 255, 255, 0.9);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #1C2359;
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+  
+      .agreement-content {
+        // 내부 제휴 업무협약서 레이아웃
+        width: 595px;
+        height: 895px;
+        border: 1px solid #E7E8F2;
+        border-radius: 12px;
+        background: #FFFFFF;
+        box-shadow: 0 8px 24px rgba(28, 35, 89, 0.06);
+        margin: 36px auto 0 auto;
+        padding: 28px 32px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+  
+        .agreement-title {
+          font-size: 24px;
+          font-weight: 700;
+          color: #1C2359;
+          text-align: center;
+          margin: 0 0 20px 0;
+        }
+  
+        .parties {
+          font-size: 18px;
+          font-weight: 600;
+          color: #1C2359;
+          text-align: center;
+          margin: 0 0 15px 0;
+        }
+  
+        .preamble {
+          font-size: 10px;
+          color: #666;
+          text-align: center;
+          margin: 0 0 30px 0;
+          line-height: 1.6;
+        }
+  
+        .articles {
+          margin-bottom: 30px;
+  
+          .article {
+            margin-bottom: 20px;
+  
+            h3 {
+              font-size: 13px;
+              font-weight: 500;
+              color: #21212C;
+              margin: 0 0 10px 0;
+            }
+  
+            p {
+              font-size: 11px;
+              color: #333;
+              margin: 0;
+              line-height: 1.6;
+            }
+          }
+        }
+  
+        .agreement-date {
+          font-size: 12.5px;
+          color: #666;
+          text-align: center;
+          margin: 0 0 10px 0;
+        }
+  
+        // 문서 내부 하단 서명 박스들
+        .signatures {
+          margin-top: auto;
+          display: flex;
+          justify-content: space-between;
+          gap: 3px;
+          padding: 0 0 4px 0;
+  
+          .signature-box {
+            width: 236px;
+            height: 105px;
+            border: 1px solid #D9DAEC;
+            border-radius: 8px;
+            padding: 12px 14px;
+            text-align: center;
+  
+            h4 {
+              font-size: 16px;
+              font-weight: 600;
+              color: #1C2359;
+              margin: 0 0 10px 0;
+            }
+  
+            p {
+              font-size: 14px;
+              color: #666;
+              margin: 0 0 5px 0;
+            }
+          }
+        }
+      }
+      
+      // 문서 외부(전체 레이아웃 내부) 하단 서명 버튼 섹션
+      .signature-buttons-section {
+        // 문서 아래, 푸터 위에 자연스럽게 위치
+        position: relative;
+        width: 595px;
+        margin: 16px auto 80px auto; // 버튼과 안내문 사이 간격 축소
+        
+        .signature-buttons {
+          display: flex;
+          justify-content: space-between;
+          gap: 23px;
+        }
+
+        .sign-btn {
+          width: 120px;
+          height: 40px;
+          border-radius: 8px;
+          border: none;
+          background: #434DFD;
+          color: #FFFFFF;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: none; // 상태 변경 시 색 유지
+
+          &:disabled {
+            opacity: 1; // 브라우저 기본 흐리게 처리 방지
+            cursor: default;
+          }
+
+          &.disabled {
+            background: #E7E8F2;
+            color: #8B8DA8;
+            cursor: not-allowed;
+          }
+
+          &.signed {
+            background: #434DFD;
+          }
+
+          &.requested {
+            // 전송 완료 후 상대측 버튼 색상 지시
+            background: #434DFD;
+            color: #FFFFFF;
+          }
+        }
+
+        .signature-note {}
+      }
+
+      // 안내 문구는 버튼 섹션과 분리되어 독립 간격
+      .signature-note {
+        width: 595px;
+        margin: 0 auto 80px auto;
+        text-align: center;
+        font-size: 12px;
+        color: #8B8DA8;
+      }
+    }
+  
+    .page-footer {
+      margin-top: 75px;
+      padding-bottom: 75px; // 하단 전역 footer와의 간격을 내부 패딩으로 처리하여 배경 유지
+      text-align: center;
+  
+      .footer-note {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 20px 0;
+      }
+  
+      .footer-buttons {
+        // ✅ 버튼 위치 조정
+        position: relative; // 중앙 고정 기준
+        display: flex;
+        justify-content: flex-start; // 왼쪽 버튼은 그대로 왼쪽
+        // ✅ 컨테이너와 동일한 너비로 설정
+        width: 1008px;
+        margin: 0 auto;
+        padding: 0 40px;
+        box-sizing: border-box;
+  
+        button {
+          padding: 12px 24px;
+          border: none;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          min-width: 100px;
+          transition: opacity 0.2s;
+  
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+  
+        .cancel-btn {
+          background: #8B8DA8;
+          color: white;
+          // ✅ 컨테이너 왼쪽과 같은 라인에 위치
+          margin-left: 0;
+        }
+  
+        .complete-btn {
+          // 기본: 비활성 스타일
+          background: #C2C3D9;
+          border: 1px solid #8B8DA8;
+          color: #ffffff;
+          // ✅ 가운데에 정확히 고정
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .complete-btn.enabled {
+          background: #434DFD;
+          border: 1px solid #434DFD;
+          color: #ffffff;
+        }
+
+        .complete-btn.disabled {
+          background: #C2C3D9;
+          border: 1px solid #8B8DA8;
+          color: #ffffff;
+        }
+      }
+    }
+  
+    // ✅ 제휴 서명 요청 팝업 수정
+    .signature-request-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+  
+      .popup-content {
+        // ✅ 정확한 레이아웃 적용
+        width: 358px;
+        height: 255px;
+        border-radius: 15px;
+        border: 1.5px solid #D9DAEC;
+        background: #FFFFFF;
+        padding: 30px 40px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+  
+        .popup-title {
+          // ✅ 제목 스타일 완벽 적용
+          font-family: Pretendard;
+          font-weight: 600;
+          font-style: SemiBold;
+          font-size: 22px;
+          line-height: 100%;
+          letter-spacing: 0%;
+          text-align: center;
+          color: #21212C;
+          margin: 0 0 15px 0;
+        }
+  
+        // ✅ 구분선 추가
+        .popup-divider {
+          width: 100%;
+          height: 1px;
+          background: #D9DAEC;
+          margin: 15px 0;
+        }
+  
+        .popup-subtitle {
+          // ✅ 첫 번째 텍스트 스타일
+          font-family: Pretendard;
+          font-weight: 600;
+          font-style: SemiBold;
+          font-size: 17px;
+          line-height: 100%;
+          letter-spacing: 0%;
+          text-align: center;
+          color: #21212C;
+          margin: 0 0 10px 0;
+        }
+  
+        .popup-warning {
+          // ✅ 두 번째 텍스트 스타일
+          font-family: Pretendard;
+          font-weight: 400;
+          font-style: Regular;
+          font-size: 13px;
+          line-height: 100%;
+          letter-spacing: 0%;
+          text-align: center;
+          color: #535469;
+          margin: 0 0 30px 0;
+        }
+  
+        .popup-buttons {
+          display: flex;
+          justify-content: space-between;
+          gap: 15px;
+          margin-top: auto;
+  
+          button {
+            // ✅ 버튼 기본 스타일
+            width: 120px;
+            height: 40px;
+            border-radius: 7px;
+            border: none;
+            padding: 12px 58px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+  
+            &:hover {
+              opacity: 0.8;
+            }
+          }
+  
+          .close-btn {
+            // ✅ 닫기 버튼 스타일
+            background: #D9DAEC;
+            color: #21212C;
+          }
+  
+          .send-btn {
+            // ✅ 보내기 버튼 스타일
+            background: #434DFD;
+            color: white;
+          }
+        }
+      }
+    }
+  }

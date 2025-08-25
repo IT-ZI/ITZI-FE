@@ -1,0 +1,240 @@
+/* src/assets/scss/pages/partnering.scss */
+.partnering-page {
+    background: #f6f6ff;
+    min-height: 100%;
+  
+    .container {
+      width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 24px;
+      padding: 24px 0 48px;
+    }
+  
+    .left {
+      display: flex;
+      align-items: flex-start;
+      margin-left: 150px;
+      margin-top: 34px;
+  
+      .profiledropdown { width: 270px; }
+    }
+  
+    .right {
+      margin-top: 34px;
+      margin-left: 170px;
+      width: 879px;
+      position: relative;
+    }
+  
+    .page-head {
+      width: 879px;
+      margin: 0 0 0; /* 아래 margin 제거 → 탭이 바로 이어 붙음 */
+  
+      .left-side {
+        .sub-title { font-size: 12px; color: #6b6f8d; margin-bottom: 6px; }
+        .title-row {
+          display: flex; align-items: center; gap: 8px;
+          .step img { display: block; height: 22px; }
+          .title { margin: 0; font-size: 22px; font-weight: 700; color: #1c2359; }
+        }
+      }
+    }
+  
+    /* 탭 - 타이틀 아래, content와 맞닿게 */
+    .tabs{
+      margin-top: 10px;   /* 타이틀과 살짝 간격 */
+      margin-bottom: 0;   /* content와 밀착 */
+      display: flex;
+      gap: 8px;
+  
+      .tab{
+        width: 158px;
+        height: 38px;
+        padding: 10px 30px;
+        border: 1px solid transparent;
+        border-bottom: none;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        background: #eef0ff;
+        color: #7d7f9a;
+        line-height: 18px;
+        display: inline-flex; align-items: center; justify-content: center;
+        box-sizing: border-box;
+      }
+  
+      .tab.active{
+        background: #434DFD;
+        border: 1px solid #434DFD;
+        color: #fff;
+      }
+    }
+  
+    .content {
+      width: 879px;
+      height: 618px;
+      background: #fff;
+      border: 1.5px solid #d9daec;
+      border-top-left-radius: 0;
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+      border-bottom-left-radius: 15px;
+      padding: 16px;
+      margin-top: 0;  /* 탭과 밀착 */
+    }
+  
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      min-height: 560px;
+    }
+  
+    .col-title {
+      font-size: 14px; font-weight: 800; color: #353a5a;
+      margin: 6px 0 8px;
+    }
+  
+    .card-list { display: flex; flex-direction: column; gap: 8px; }
+  
+    .card {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f9faff; border: 1px solid #e8eaff; border-radius: 8px;
+      height: 40px; padding: 0 10px;
+  
+      .left-side {
+        display: flex; align-items: center; gap: 8px;
+  
+        .chip {
+          display: inline-flex; align-items: center; justify-content: center;
+          width: 18px; height: 18px; border-radius: 50%;
+          background: #eef0ff; color: #4c5cff; font-weight: 800; font-size: 12px;
+        }
+        .name { font-size: 13px; color: #353a5a; font-weight: 700; }
+      }
+  
+      .btn-detail {
+        appearance: none; border: 0;
+        font-size: 12px; font-weight: 700;
+        background: #eef0ff; color: #4c5cff;
+        padding: 6px 10px; border-radius: 6px; cursor: pointer;
+      }
+    }
+  
+    .card.done { opacity: 0.95; }
+  }
+  
+  /* ✅ 새로운 구조: 왼쪽/오른쪽 섹션 분리 (중앙선 높이 수정) */
+  .inquiry-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    min-height: 500px; /* ✅ 최소 높이 증가 */
+  }
+  
+  .inquiry-section {
+    flex: 1;
+    padding: 20px;
+    
+    &.sent-section {
+      /* 중앙선은 inquiry-divider로만 처리 */
+    }
+    
+    &.received-section {
+      /* 중앙선은 inquiry-divider로만 처리 */
+    }
+  }
+  
+  /* ✅ 중앙선 높이 수정 - 더 길게! */
+  .inquiry-divider {
+    position: absolute;
+    left: 50%;
+    top: 20px; /* ✅ padding-top만큼 여백 */
+    bottom: 20px; /* ✅ padding-bottom만큼 여백 */
+    width: 1px;
+    background-color: #E7E8F2;
+    z-index: 10;
+    /* ✅ 또는 더 확실하게 고정 높이로 설정 */
+    height:610px; /* ✅ 충분히 긴 높이 */
+  }
+  
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1C2359;
+    margin-bottom: 20px;
+    /* ✅ 왼쪽 정렬로 수정 */
+    text-align: left;
+  }
+  
+  /* ✅ 문의 리스트 스타일 추가 (왼쪽 정렬) */
+  .inquiry-list {
+    ul {
+      list-style: none; /* 기본 bullet point 제거 */
+      padding: 0;
+      margin: 0;
+    }
+    
+    .inquiry-item {
+      width: 359px;
+      height: 36px;
+      /* ✅ 카드 간격을 10px로 수정 */
+      margin-top: 10px;
+      margin-left: 0;
+      border: 1px solid #C2C3D9;
+      border-radius: 5px;
+      padding: 10px 15px;
+      background: #F6F6FF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      
+      &:first-child {
+        margin-top: 0; /* 첫 번째 아이템은 위 여백 제거 */
+      }
+      
+      .item-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        .icon {
+          width: 16px;
+          height: 16px;
+        }
+        
+        .text {
+          font-size: 14px;
+          font-weight: 500;
+          color: #1C2359;
+        }
+      }
+      
+      .detail-btn {
+        background: none;
+        border: none;
+        color: #8B8DA8;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    
+    .empty {
+      text-align: left; /* ✅ 왼쪽 정렬로 수정 */
+      color: #7D7F9A;
+      font-size: 14px;
+      padding: 40px 0;
+    }
+  }

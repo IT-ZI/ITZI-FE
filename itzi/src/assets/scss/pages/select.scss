@@ -27,7 +27,7 @@
     .right {
       margin-top: 34px;
       margin-left: 170px;
-      width: 879px;                 /* ✅ 본문 고정 폭 */
+      width: 879px;
       background: transparent !important;
       border: 0 !important;
       border-radius: 0 !important;
@@ -39,65 +39,166 @@
     /* 헤더 (타이틀/버튼 라인) */
     .page-head {
       position: relative;
-      width: 879px;                 /* ✅ content와 동일 */
+      width: 879px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin: 0 0 12px;
   
       .left-side {
-        .sub-title { font-size: 12px; color: #6b6f8d; margin-bottom: 6px; }
+        .sub-title { 
+          font-size: 12px; 
+          color: #6b6f8d; 
+          margin-bottom: 6px; 
+        }
         .title-row {
-          display: flex; align-items: center; gap: 8px;
-          .step img { display: block; height: 22px; }
-          .title { margin: 0; font-size: 22px; font-weight: 700; color: #1c2359; }
+          display: flex; 
+          align-items: center; 
+          gap: 8px;
+          .step img { 
+            display: block; 
+            height: 22px; 
+          }
+          .title { 
+            margin: 0; 
+            font-size: 22px; 
+            font-weight: 700; 
+            color: #1c2359; 
+          }
         }
       }
   
       .right-side {
-        position: absolute; top: 5px; right: 0;
-        .more-btn{
-          height: 32px; padding: 0 12px; border-radius: 8px;
-          border: 1px solid #d9daec; background: #fff;
-          font-size: 12px; font-weight: 600; color: #1c2359; cursor: pointer;
+        position: absolute; 
+        top: 157.74px; 
+        right: 0;
+        .more-btn {
+          width: 128px;
+          height: 30px;
+          padding: 7px 10px;
+          border-radius: 5px;
+          border: 1px solid #d9daec; 
+          background: #fff;
+          font-size: 12px; 
+          font-weight: 600; 
+          color: #1c2359; 
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
         }
       }
     }
   
-    /* 탭 — 콘텐츠 박스와 딱 붙게 (요청대로 유지) */
-    .tabs{
-      display: flex; gap: 8px; border-bottom: 0; margin: 6px 0 0; padding: 0 2px;
-      .tab{
-        appearance: none; border: 1px solid transparent; border-bottom: none;
-        background: #eef0ff; color: #7d7f9a; padding: 8px 16px; font-size: 13px; font-weight: 700;
-        border-top-left-radius: 10px; border-top-right-radius: 10px; cursor: pointer;
+    /* 탭 — 정확한 위치와 크기로 수정 (절대 위치 제거) */
+    .tabs {
+      display: flex; 
+      gap: 10px; 
+      border-bottom: 0; 
+      margin: 6px 0 0; 
+      padding: 0 2px;
+      
+      .tab {
+        width: 158px;
+        height: 38px;
+        appearance: none; 
+        border: 1px solid transparent; 
+        border-bottom: none;
+        background: #eef0ff; 
+        color: #7d7f9a; 
+        padding: 10px 30px; 
+        font-size: 13px; 
+        font-weight: 700;
+        border-top-left-radius: 10px; 
+        border-top-right-radius: 10px; 
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
       }
-      .tab.active{ color: #fff; background: #4c5cff; border-color: #4c5cff; }
+      
+      .tab.active { 
+        color: #fff; 
+        background: #4c5cff; 
+        border-color: #4c5cff; 
+      }
     }
   
-    /* 콘텐츠 래퍼(고정 박스) */
+    /* 콘텐츠 래퍼(고정 박스) - 내부 컨테이너 제거 */
     .content {
-      width: 879px;                   /* ✅ 고정 */
-      height: 618px;                  /* ✅ 고정 */
+      width: 879px;
+      height: 618px;
       box-sizing: border-box;
       background: #fff;
-      border: 1.5px solid #d9daec;    /* ✅ 고정 */
-      border-top-left-radius: 0;      /* ✅ 고정 */
+      border: 1.5px solid #d9daec;
+      border-top-left-radius: 0;
       border-top-right-radius: 15px;
       border-bottom-right-radius: 15px;
       border-bottom-left-radius: 15px;
       padding: 16px;
-      margin-top: 0;                  /* 탭과 밀착 */
-      overflow: auto;                 /* 고정 박스 내부만 스크롤 */
+      margin-top: 0;
+      overflow: auto;
+      position: relative;
   
-      /* 공통 패널 초기화(박스는 각 패널에서) */
+      /* 내부 panel 클래스 스타일 제거 - 직접 content에 스타일 적용 */
       .panel {
-        background: transparent;
-        border: 0;
-        box-shadow: none;
-        padding: 0;
-        width: 100%;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
         box-sizing: border-box;
+      }
+  
+      /* ===== 문의 패널 스타일을 content에 직접 적용 ===== */
+      .panel.inquiry {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+        position: static !important;
+        min-height: auto !important;
+        grid-template-columns: none !important;
+        column-gap: 0 !important;
+        align-content: start !important;
+        overflow: visible !important;
+  
+        /* 가상 요소 제거 */
+        &::before {
+          display: none !important;
+        }
+  
+        /* 그리드 레이아웃 제거 */
+        > .inquiries { 
+          display: block !important; 
+        }
+  
+        > .inquiries > .sent-box,
+        > .inquiries > :nth-child(-n+2),
+        > .inquiries > .received-box,
+        > .inquiries > :nth-child(n+3) {
+          grid-column: auto !important; 
+          min-width: auto !important; 
+          box-sizing: border-box; 
+          padding: 0 !important;
+          display: block !important;
+        }
+  
+        .inq-list { 
+          padding: 0; 
+          margin: 0; 
+        }
+        .inq-list .inq-row { 
+          width: 100%; 
+        }
+        .inquiry-card { 
+          margin-top: 12px; 
+        }
       }
   
       /* ===== 스크랩/혜택 패널: content 안에서 꽉 차게 ===== */
@@ -108,9 +209,11 @@
         padding: 14px 12px 16px;
         box-shadow: 0 8px 24px rgba(28,35,89,0.06);
   
-        .section-title{
+        .section-title {
           margin: 0 2px 10px;
-          font-size: 12px; font-weight: 700; color: #1C2359;
+          font-size: 12px; 
+          font-weight: 700; 
+          color: #1C2359;
         }
   
         .progress-panel { width: 100%; }
@@ -125,94 +228,253 @@
         }
   
         .benefit-card {
-          width: 267.92px; height: 167.17px;
-          border-radius: 14px; overflow: hidden; background: #fff;
+          width: 267.92px; 
+          height: 167.17px;
+          border-radius: 14px; 
+          overflow: hidden; 
+          background: #fff;
           box-shadow: 0 6px 18px rgba(28,35,89,0.06);
           border: 1px solid rgba(217,218,236,0.6);
   
-          .thumb{
-            position: relative; height: 86.57px; overflow: hidden;
-            img{ display:block; width:100% !important; height:86.57px !important; object-fit:cover; }
-            .scrap-badge{
-              position:absolute; top:6px !important; right:8px !important;
-              display:inline-flex; align-items:center; gap:6px; z-index:5;
-              .scrap-count{ font-size:11px; font-weight:700; line-height:1; min-width:12px; text-align:right; }
+          .thumb {
+            position: relative; 
+            height: 86.57px; 
+            overflow: hidden;
+            img { 
+              display: block; 
+              width: 100% !important; 
+              height: 86.57px !important; 
+              object-fit: cover; 
+            }
+            .scrap-badge {
+              position: absolute; 
+              top: 6px !important; 
+              right: 8px !important;
+              display: inline-flex; 
+              align-items: center; 
+              gap: 6px; 
+              z-index: 5;
+              .scrap-count { 
+                font-size: 11px; 
+                font-weight: 700; 
+                line-height: 1; 
+                min-width: 12px; 
+                text-align: center; 
+              }
             }
           }
   
-          .body{ padding:10px 12px 14px !important; }
-          .title{
-            font-size:11.19px; font-weight:700; color:#000; margin:0;
-            display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+          .body { 
+            padding: 10px 12px 14px !important; 
           }
-          .meta{
-            list-style:none; margin:6px 0 0; padding:0;
-            li{ display:flex; gap:6px; font-size:8.96px; color:#000; }
-            .label{ color:#000; } .sep{ color:#a7abc9; }
+          .title {
+            font-size: 11.19px; 
+            font-weight: 700; 
+            color: #000; 
+            margin: 0;
+            display: -webkit-box; 
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical; 
+            overflow: hidden;
+          }
+          .meta {
+            list-style: none; 
+            margin: 6px 0 0; 
+            padding: 0;
+            li { 
+              display: flex; 
+              gap: 6px; 
+              font-size: 8.96px; 
+              color: #000; 
+            }
+            .label { color: #000; } 
+            .sep { color: #a7abc9; }
           }
         }
-      }
-  
-      /* ===== 문의 패널도 같은 박스 스타일 ===== */
-      .panel.inquiry{
-        background:#fff;
-        border:1.5px solid #d9daec;
-        border-radius:15px;
-        padding:16px;
-        box-shadow: 0 8px 24px rgba(28,35,89,0.06);
-  
-        /* Select 페이지 한정 1:1 그리드 */
-        position: relative;
-        min-height: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 0;
-        align-content: start;
-        overflow: auto;
-  
-        &::before{
-          content: "";
-          position: absolute;
-          left: 50%; top: 0; bottom: 0;
-          width: 1px; background: #D9DAEC; transform: translateX(-0.5px);
-        }
-  
-        > .inquiries { display: contents; }
-  
-        > .inquiries > .sent-box,
-        > .inquiries > :nth-child(-n+2) {
-          grid-column: 1; min-width: 0; box-sizing: border-box; padding: 0 20px;
-        }
-        > .inquiries > .received-box,
-        > .inquiries > :nth-child(n+3) {
-          grid-column: 2; min-width: 0; box-sizing: border-box; padding: 0 20px;
-        }
-  
-        .inq-list{ padding: 0; margin: 0; }
-        .inq-list .inq-row{ width: 100%; }
-        .inquiry-card{ margin-top: 12px; }
       }
     }
   }
   
   /* (옵션) 스크랩 카드 리스트 대체 UI가 있을 때 사용 */
-  .select-page .right .scrap-grid{
-    display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;
+  .select-page .right .scrap-grid {
+    display: grid; 
+    grid-template-columns: repeat(3, minmax(0,1fr)); 
+    gap: 12px;
   }
-  .select-page .right .scrap-card{
-    border:1.5px solid #d9daec; border-radius:12px; background:#fff; padding:12px;
-    box-shadow:0 8px 24px rgba(28,35,89,.06); display:grid; grid-template-rows:auto auto auto; row-gap:8px;
   
-    .sc-head{ display:flex; align-items:center; gap:8px; }
-    .sc-head .badge{
-      height:22px; padding:0 8px; border-radius:6px; background:#f1f2ff; color:#1c2359; font-size:12px; font-weight:700;
-      display:inline-flex; align-items:center; justify-content:center;
+  .select-page .right .scrap-card {
+    border: 1.5px solid #d9daec; 
+    border-radius: 12px; 
+    background: #fff; 
+    padding: 12px;
+    box-shadow: 0 8px 24px rgba(28,35,89,.06); 
+    display: grid; 
+    grid-template-rows: auto auto auto; 
+    row-gap: 8px;
+  
+    .sc-head { 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
     }
-    .sc-head .name{ margin:0; font-weight:700; font-size:14px; color:#1c2359; line-height:22px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .sc-head .badge {
+      height: 22px; 
+      padding: 0 8px; 
+      border-radius: 6px; 
+      background: #f1f2ff; 
+      color: #1c2359; 
+      font-size: 12px; 
+      font-weight: 700;
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center;
+    }
+    .sc-head .name { 
+      margin: 0; 
+      font-weight: 700; 
+      font-size: 14px; 
+      color: #1c2359; 
+      line-height: 22px; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+      white-space: nowrap; 
+    }
   
-    .tags{ display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
-    .tags .tag{ font-size:12px; color:#3a3b4d; background:#f6f6ff; border:1px solid #e7e8f2; border-radius:6px; padding:2px 6px; }
+    .tags { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 6px; 
+      margin: 0; 
+      padding: 0; 
+      list-style: none; 
+    }
+    .tags .tag { 
+      font-size: 12px; 
+      color: #3a3b4d; 
+      background: #f6f6ff; 
+      border: 1px solid #e7e8f2; 
+      border-radius: 6px; 
+      padding: 2px 6px; 
+    }
   
-    .meta{ display:flex; gap:6px; }
-    .meta .chip{ font-size:12px; color:#7d7f9a; background:#fafbff; border:1px solid #e7e8f2; border-radius:999px; padding:2px 8px; }
+    .meta { 
+      display: flex; 
+      gap: 6px; 
+    }
+    .meta .chip { 
+      font-size: 12px; 
+      color: #7d7f9a; 
+      background: #fafbff; 
+      border: 1px solid #e7e8f2; 
+      border-radius: 999px; 
+      padding: 2px 8px; 
+    }
+  }
+  
+  /* ✅ 새로운 구조: 왼쪽/오른쪽 섹션 분리 (중복 제거) */
+  .inquiry-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  
+  .inquiry-section {
+    flex: 1;
+    padding: 20px;
+    
+    &.sent-section {
+      /* 중앙선은 inquiry-divider로만 처리 */
+    }
+    
+    &.received-section {
+      /* 중앙선은 inquiry-divider로만 처리 */
+    }
+  }
+  
+  /* ✅ 중앙선 하나만 (중복 제거) */
+  .inquiry-divider {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #E7E8F2;
+    z-index: 10;
+  }
+  
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 20px;
+    /* ✅ 왼쪽 정렬로 수정 */
+    text-align: left;
+  }
+  
+  /* ✅ 문의 리스트 스타일 추가 (왼쪽 정렬) */
+  .inquiry-list {
+    ul {
+      list-style: none; /* 기본 bullet point 제거 */
+      padding: 0;
+      margin: 0;
+    }
+    
+    .inquiry-item {
+      width: 359px;
+      height: 36px;
+      margin-top: 10px;
+      /* ✅ 왼쪽 정렬로 수정 */
+      margin-left: 0;
+      border: 1px solid #C2C3D9;
+      border-radius: 5px;
+      padding: 10px 15px;
+      background: #F6F6FF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      
+      &:first-child {
+        margin-top: 0; /* 첫 번째 아이템은 위 여백 제거 */
+      }
+      
+      .item-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        .icon {
+          width: 16px;
+          height: 16px;
+        }
+        
+        .text {
+          font-size: 14px;
+          font-weight: 500;
+          color: #1C2359;
+        }
+      }
+      
+      .detail-btn {
+        background: none;
+        border: none;
+        color: #8B8DA8;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    
+    .empty {
+      text-align: left; /* ✅ 왼쪽 정렬로 수정 */
+      color: #7D7F9A;
+      font-size: 14px;
+      padding: 40px 0;
+    }
   }

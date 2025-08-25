@@ -27,7 +27,7 @@ function InquiryList({ items = [], onOpen = () => {}, mode = "sent" }) {
                   <img className="plane" src={icon} alt="" />
                   <span className="text">{it.name}</span>
                 </div>
-                <button type="button" className="inq-more-btn" onClick={() => onOpen(it.id)}>
+                <button type="button" className="inq-more-btn" onClick={() => onOpen(it)}>
                   <span className="detail">자세히 보기&nbsp;&gt;</span>
                 </button>
               </li>
@@ -56,8 +56,14 @@ export default function InquiryPanel({ sent = [], received = [] }) {
     return list.find((x) => String(x.id) === String(openId)) ?? null;
   }, [openBox, openId, sentList, recvList]);
 
-  const handleOpenSent = (id) => { setOpenBox("sent"); setOpenId(id); };
-  const handleOpenReceived = (id) => { setOpenBox("received"); setOpenId(id); };
+  const handleOpenSent = (item) => { 
+    setOpenBox("sent"); 
+    setOpenId(item.id); 
+  };
+  const handleOpenReceived = (item) => { 
+    setOpenBox("received"); 
+    setOpenId(item.id); 
+  };
   const handleClose = () => { setOpenBox(null); setOpenId(null); };
 
   const handleDelete = () => {
@@ -116,7 +122,7 @@ export default function InquiryPanel({ sent = [], received = [] }) {
             {/* 본문 */}
             <div className="cafe-modal__body">
               <div className="cafe-modal__message">
-                안녕하세요, 카페구월입니다 ☕🍰
+                안녕하세요, 카페구월입니다 ☕��
                 {"\n"}성신여대 총학생회에서 올려주신 상권 제휴 모집 공지를
                 {"\n"}확인하고 연락드립니다.
                 {"\n\n"}저희 카페는 성신여대 재학생 및 교직원분들을 대상으로
@@ -128,7 +134,7 @@ export default function InquiryPanel({ sent = [], received = [] }) {
                 {"\n\n"}제휴 진행을 위해 필요한 절차나 제출 서류를 안내해
                 {"\n"}주시면 준비하여 보내드리겠습니다.
                 {"\n\n"}함께 이번 가을, 학생분들의 일상에 작은 즐거움을 더할
-                {"\n"}수 있기를 기대합니다 🌿
+                {"\n"}수 있기를 기대합니다 ��
                 {"\n\n"}감사합니다.
                 {"\n"}카페구월 드림
               </div>
@@ -213,7 +219,7 @@ export default function InquiryPanel({ sent = [], received = [] }) {
                     fontFamily: "Pretendard, system-ui, -apple-system",
                     fontSize: 14, lineHeight: "22px", color: "#21212C"
                   }}
-                >{`안녕하세요, 오르비에토입니다 🍝🥗
+                >{`안녕하세요, 오르비에토입니다 ��🥗
 성신여대 총학생회에서 올린 상권 제휴 모집 공지를
 확인하고 제휴 가능 여부를 문의드립니다.
 

@@ -55,7 +55,6 @@ export default function ProfileSidebar({ profile, toProceed }) {
             <button className="list2" onClick={() => nav("/partner/partnering")}>
               <img src={step2} alt="step2" />
               <p>제휴 맺기</p>
-              {badge > 0 && <span className="mini-badge">{badge}</span>}
             </button>
 
             <button className="list2">
