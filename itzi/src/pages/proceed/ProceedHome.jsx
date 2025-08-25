@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, NavLink, Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import profileImage from "../../assets/img/profile2.png";
 import step1 from "../../assets/img/step1.png";
 import step2 from "../../assets/img/step2.png";
@@ -8,6 +8,7 @@ import Banner1 from "../../assets/img/banner_1.png";
 import Banner2 from "../../assets/img/banner_2.png";
 import BookmarkOn from "../../assets/img/ic_bookmark_on.svg";
 import BookmarkOff from "../../assets/img/ic_bookmark_off.svg";
+import CooperationWriteModal from './modal/CooperationWriteModal';
 
 const Card = ({ post, onToggleBookmark }) => {
     return (
@@ -70,7 +71,7 @@ const CardGrid = ({ initial }) => {
     if (posts.length === 0) {
         return (
             <div className="empty_message">
-                아직 작성한 홍보 게시글이 없습니다.<br />
+                아직 진행 중인 제휴 게시글이 없습니다.<br />
                 제휴 외에도 자체 혜택과 이벤트를 자유롭게 홍보해 보세요!
             </div>
         );
@@ -87,112 +88,45 @@ const CardGrid = ({ initial }) => {
     );
 };
 
-/* ---------- 탭: 제휴 모집 게시글 ---------- */
-export const RecruitTab = () => {
+const ProceedHome = () => {
+    const navigate = useNavigate();
+    const [openWriteModal, setOpenWriteModal] = useState(false);
+
+    // 진행 중 목록(더미)
     const dummy = [
         {
             id: 1,
-            title: "성신여대 X 카페 스피호",
+            title: "성신여대 X 카페 스피호 - 상점 제휴",
             image: Banner1,
             target: "성신여대 재학생",
             period: "2025.09.01 ~ 2025.12.31",
             benefit: "아메리카노 20% 할인",
-            bookmarkCount: 12,
+            bookmarkCount: 80,
             bookmarked: false,
-            dday: 20,
+            dday: 21,
             negotiable: { target: false, period: true, benefit: true },
         },
         {
             id: 2,
-            title: "성신여대 X 체리블라썸나이스",
+            title: "성신여대 X 요지트 - 상점제휴",
             image: Banner2,
-            target: "성신여대 학생증 소지자",
-            period: "2025.09.10 ~ 2025.12.31",
-            benefit: "디저트 세트 15% 할인",
-            bookmarkCount: 8,
+            target: "성신여대 재학생 대상",
+            period: "2025.08.01 ~ 2025.09.01",
+            benefit: "요거트 300g 이상 구매 시, 과일 토핑 1종 무료 제공",
+            bookmarkCount: 32,
             bookmarked: true,
-            dday: 50,
+            dday: 22,
             negotiable: { target: true, period: true, benefit: true },
-        },
-        {
-            id: 3,
-            title: "성신여대 X 빵굽는하루",
-            image: Banner1,
-            target: "성신여대 재학생",
-            period: "2025.08.20 ~ 2025.10.30",
-            benefit: "모든 빵 10% 할인",
-            bookmarkCount: 5,
-            bookmarked: false,
-            dday: 3,
-            negotiable: { target: true, period: true, benefit: true },
-        },
-        {
-            id: 4,
-            title: "성신여대 X 라떼하우스",
-            image: Banner2,
-            target: "성신여대 학생/교직원",
-            period: "2025.09.15 ~ 2025.11.30",
-            benefit: "라떼 메뉴 무료 사이즈업",
-            bookmarkCount: 15,
-            bookmarked: true,
-            dday: 15,
-            negotiable: { target: true, period: true, benefit: false },
-        },
-        {
-            id: 5,
-            title: "성신여대 X 스윗티드링크",
-            image: Banner1,
-            target: "성신여대 재학생",
-            period: "2025.09.01 ~ 2025.12.15",
-            benefit: "음료 1+1 이벤트",
-            bookmarkCount: 20,
-            bookmarked: false,
-            dday: 30,
-            negotiable: { target: false, period: true, benefit: true },
         },
     ];
-    return <CardGrid initial={dummy} />;
-};
 
-/* ---------- 탭: 혜택 홍보 게시글 (예시 더미) ---------- */
-export const BenefitTab = () => {
-    const dummy = [
-        {
-            id: 101,
-            title: "가을 축제 부스 혜택 안내",
-            image: Banner2,
-            target: "성신여대 재학생",
-            period: "2025.09.20 ~ 2025.10.05",
-            benefit: "게임 참여 시 굿즈 증정",
-            bookmarkCount: 9,
-            bookmarked: false,
-            dday: 12,
-            negotiable: { target: true, period: true, benefit: true },
-        },
-        {
-            id: 102,
-            title: "총학 특별 쿠폰 배포",
-            image: Banner1,
-            target: "학생증 소지자",
-            period: "2025.09.01 ~ 2025.09.30",
-            benefit: "제휴 매장 10% 쿠폰",
-            bookmarkCount: 17,
-            bookmarked: true,
-            dday: 5,
-            negotiable: { target: false, period: false, benefit: true },
-        },
-    ];
-    return <CardGrid initial={dummy} />;
-};
-
-const ProceedHome = () => {
-    const navigate = useNavigate();
-
-    // 제휴 요청 가능 on/off
-    const [requestable, setRequestable] = useState(true);
+    const handleSelectFromModal = (path) => {
+        setOpenWriteModal(false);
+        navigate(path);
+    };
 
     return (
-        <div className='Writehome_wrap'>
+        <div className='Proceedhome_wrap'>
             <aside className='profile'>
                 <div className="myname">
                     <div className="myname_img">
@@ -243,47 +177,37 @@ const ProceedHome = () => {
             </aside>
             <main className='board'>
                 <div className="board_head">
-                    <div className="subtitle">게시판 글쓰기</div>
-                    <h3 className="title">제휴 모집 / 혜택 홍보 글쓰기</h3>
+                    <div className="subtitle">제휴 맺기</div>
+                    <div className="title">
+                        <img src={step3} alt="step3" />
+                        <h3>진행하기</h3>
+                    </div>
                 </div>
                 <div className="board_top">
                     <div className="tabs">
-                        <NavLink to="/cooperation/write/recruit" className={({ isActive }) => `tab ${isActive ? 'active' : ''}`}>
-                            제휴 모집 게시글
-                        </NavLink>
-                        <NavLink to="/cooperation/write/benefit" className={({ isActive }) => `tab ${isActive ? 'active' : ''}`}>
-                            혜택 홍보 게시글
-                        </NavLink>
+                        <button type='button' className='tab active' disabled>
+                            제휴 게시글
+                        </button>
                     </div>
                     <div className="right_tools">
-                        <div className="switch_row">
-                            <span>제휴 요청 가능 상태</span>
-                            <button
-                                className={`seg_toggle ${requestable ? 'on' : 'off'}`}
-                                onClick={() => setRequestable(v => !v)}
-                                aria-pressed={requestable}
-                                aria-label={`제휴 요청 가능 ${requestable ? 'on' : 'off'}`}
-                                type="button"
-                            >
-                                <span className="opt off">off</span>
-                                <span className="opt on">on</span>
-                                <span className="knob" />
-                            </button>
-                        </div>
-
                         <button
                             className="write_btn"
-                            onClick={() => navigate('/cooperation/write/new')}
+                            onClick={() => setOpenWriteModal(true)}
                         >
-                            + 제휴 모집 글쓰기
+                            + 제휴 게시 글쓰기
                         </button>
                     </div>
                 </div>
                 {/* 탭 컨텐츠 */}
                 <div className="board_body">
-                    <Outlet />
+                    <CardGrid initial={dummy} />
                 </div>
             </main >
+            <CooperationWriteModal
+                open={openWriteModal}
+                onClose={() => setOpenWriteModal(false)}
+                onSelect={handleSelectFromModal}
+            />
         </div >
     )
 }

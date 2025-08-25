@@ -9,6 +9,8 @@ import Cooperationlist from "./pages/detailpage/cooperationlist"
 import WriteHome, { BenefitTab, RecruitTab } from "./pages/write/WriteHome"
 import CooperationWrite from "./pages/write/CooperationWrite"
 import BenefitWrite from "./pages/write/BenefitsWrite";
+import ProceedHome from "./pages/proceed/ProceedHome";
+import ProceedWrite from "./pages/proceed/ProceedWrite";
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
           </Route>
           <Route path="/cooperation/write/new" element={<CooperationWrite />} />
           <Route path="/cooperation/write/benefit/new" element={<BenefitWrite />} />
+          <Route path="proceed/" element={<ProceedHome />} />
+          <Route path="proceed/write/new" element={<ProceedWrite />} />
         </Route>
       </Routes>
     </LocalizationProvider>
