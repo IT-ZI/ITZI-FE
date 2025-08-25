@@ -2,11 +2,62 @@ import x from "../../assets/img/x.png"
 import { useState } from "react";
 import xButton from "../../assets/img/xButton.png"
 import Dropdown from "../../components/common/Dropdown.jsx"
+import { useEffect } from "react";
+import axios from "axios";
 
 const CooperationModal = ({onClose, onSend}) => {
 
   const [kwInput, setKwInput] = useState("");
-  const [keywords, setKeywords] = useState([]); // 확정된 키워드 목록
+  const [keywords, setKeywords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [purpose, setPurpose] = useState("");
+  const [detail, setDetail]   = useState('');
+  const [content,setContent] = useState(null);
+  
+
+  const postId=33;
+  const userId=2000;
+  const receiverId =6; 
+
+  const callApi = async () => {
+    const periodType = date.mode === "manual" ? "CUSTOM" : "SAME_AS_POST";
+    const orgType    = organization.mode === "manual" ? "CUSTOM" : "AUTO";
+
+    const payload = {
+      receiverId,
+      postId,
+      purpose: purpose.trim(),
+      periodType,
+      ...(periodType === "CUSTOM" ? { periodValue: date.text.trim() } : {}),
+      orgType,
+      ...(orgType === "CUSTOM" ? { orgValue: organization.text.trim() } : {}),
+      detail: detail.trim(),
+      content: null,  
+      keywords,                   
+    };
+
+    console.log("payload : ", payload);
+
+    try {
+      setLoading(true);
+      const { data } = await axios.post(
+        `https://api.onlyoneprivate.store/partnership/${userId}`,
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
+      console.log("res.data:", data);
+
+      const contentFromAI = data.result.content;
+      setContent(contentFromAI);
+
+      console.log(contentFromAI);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const MAX = 5; // 키워드 최대 개수 
   const MAX_LEN = 10; // 한 키워드 최대 길이 
@@ -73,6 +124,11 @@ const CooperationModal = ({onClose, onSend}) => {
   };
 
 
+  useEffect(() => {
+    console.log(date);
+    console.log(organization);
+  }, [date, organization]);
+
   return (
     <div className="cooperationModal" onClick={onClose}>
       <div className="box" onClick={(e) => e.stopPropagation()}>
@@ -84,13 +140,13 @@ const CooperationModal = ({onClose, onSend}) => {
             <div className="content_left">
               <div className="content_container1">
                 <h3>문의 목적</h3>
-                <input type="text" placeholder="ex)예: 학과 행사 간식 제휴, 정기 할인 제휴 등"></input>
+                <input type="text" value={purpose} onChange={(e) => setPurpose(e.target.value)} placeholder="ex)예: 학과 행사 간식 제휴, 정기 할인 제휴 등"></input>
               </div>
               <div className="content_container2">
                 <h3>희망 제휴 기간</h3>
                 <Dropdown
                   preset="sameManual"
-                  value={{mode:''}}
+                  value={date}
                   onChange={setDate}
                   selectPlaceholder="희망 제휴 기간을 선택 및 작성해 주세요."
                 />
@@ -99,14 +155,14 @@ const CooperationModal = ({onClose, onSend}) => {
                 <h3>우리 단체 정보</h3>
                 <Dropdown
                   preset="autoManual"
-                  value={{mode:''}}
+                  value={organization}
                   onChange={setOrganization}
                   selectPlaceholder="우리 단체 기본 정보를 간단히 작성해 주세요."
                 />
               </div>
               <div className="content_container3">
                 <h3>문의 내용 상세</h3>
-                <textarea placeholder="어떤 혜택과 방식을 원하는지 자유롭게 작성해 주세요."></textarea>
+                <textarea value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="어떤 혜택과 방식을 원하는지 자유롭게 작성해 주세요."></textarea>
               </div>
               <div className="content_container4">
                 <div className="content_header">
@@ -135,9 +191,12 @@ const CooperationModal = ({onClose, onSend}) => {
             <div className="content_right">
                 <h3>AI 문의 글 작성</h3>
                 <div className="ai_box">
-                    <div className="click">
-                      <p>AI문의 글 변환</p>
-                    </div>
+                  {content === null && 
+                    <div className="click" onClick={callApi}>
+                        <p>{loading? '변환 중입니다..' : "AI문의 글 변환"}</p>
+                    </div>          
+                  }
+                    <p>{content}</p>
                 </div>
             </div>
         </div>

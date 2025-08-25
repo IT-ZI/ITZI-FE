@@ -1,4 +1,5 @@
 import { useId, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 
 const PRESETS = {
   autoManual: [
@@ -33,7 +34,13 @@ export default function Dropdown({
   const handleSelect = (e) => {
     const m = e.target.value;
     setMode(m);
-    emit({ mode: m, text: m === 'manual' ? text : '' });
+     if (m === 'manual') {
+      setText('');                          // 수동 시작할 때 인풋은 항상 빈값
+      emit({ mode: 'manual', text: '' });
+    } else {
+      setText('');                          // 수동이 아니면 text는 의미 없으니 항상 비움
+      emit({ mode: m, text: '' });
+    }
   };
 
   const handleInput = (e) => {
@@ -41,7 +48,13 @@ export default function Dropdown({
     setText(t);
     emit({ mode: 'manual', text: t });
   };
-  
+
+  useEffect(() => {
+    if (value?.mode !== undefined) setMode(value.mode);
+    if (value?.text !== undefined) setText(value.text ?? '');
+  }, [value?.mode, value?.text]);
+
+
   return (
     <div className="dropdown-field">
       {mode !== 'manual' ? (
