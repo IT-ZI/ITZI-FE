@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Banner1 from '../../assets/img/banner_1.png';  // TODO: 추후 slick-dot 없는 제휴를 잇지 버전으로 이미지 파일 변경 필요
-import Banner2 from '../../assets/img/banner_2.png';  // TODO: 추후 slick-dot 없는 제휴를 잇지 버전으로 이미지 파일 변경 필요
+import Banner1 from '../../assets/img/coop_banner_1.png';  // TODO: 추후 slick-dot 없는 제휴를 잇지 버전으로 이미지 파일 변경 필요
+import Banner2 from '../../assets/img/coop_banner_2.png';  // TODO: 추후 slick-dot 없는 제휴를 잇지 버전으로 이미지 파일 변경 필요
 import SearchIcon from '../../assets/img/ic_search.svg';
 import SearchingIcon from '../../assets/img/ic_searching.svg';
 import BookmarkOn from '../../assets/img/ic_bookmark_on.svg';
