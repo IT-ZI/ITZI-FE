@@ -25,7 +25,7 @@ export default function PartnerStartModal({
 
   // ✅ 추가: PartneringPage로 이동하는 함수
   const handleGoToPartnering = () => {
-    navigate("/partner/partnering");
+            navigate("/partnering");
     onClose();
   };
 

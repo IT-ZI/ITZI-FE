@@ -12,6 +12,9 @@ import PrevIcon from '../../assets/img/ic_prev.svg';
 import NextIcon from '../../assets/img/ic_next.svg';
 import CaretDown from '../../assets/img/ic_caret_down.svg';
 
+// ✅ 최소추가: 공용 스크랩 저장소 유틸
+import { getAll, upsert, toggleScrap, subscribe } from '../../utils/scrapStore';
+
 const SortDropdown = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -115,7 +118,7 @@ const Cooperation = () => {
   const onFocusSearch = () => setSearching(true);
   const onBlurSearch = () => setSearching(false);
 
-  const tabs = ["전체", "매장", "학교", "학과", "동아리/소모임"];
+  const tabs = ["전체", "대학생", userUniv];
 
   // 정렬 (기본: 마감임박순)
   const [sortBy, setSortBy] = useState('마감임박순');
@@ -123,16 +126,16 @@ const Cooperation = () => {
   // 게시물 필터링
   const filterOptions = [
     '전체',
-    '제휴 모집 중',
-    '제휴 요청 가능',
-    '간식 행사',
-    '협찬',
-    '행사/이벤트',
-    '할인 혜택',
-    '쿠폰 제공',
-    '체험 부스',
-    '굿즈 증정',
-    '설문 참여 리워드',
+    '음식점 / 카페',
+    '의류 / 패션',
+    '뷰티 / 미용',
+    '헬스 / 피트니스',
+    '문구 / 서점',
+    '생활 / 잡화',
+    '병원 / 약국',
+    '전자 / IT',
+    '교통 / 이동',
+    '기타',
   ];
 
   // 기본값: 전체
@@ -225,17 +228,76 @@ const Cooperation = () => {
     }
   ]);
 
-  // 북마크 토글 핸들러
+  // ✅ 최소추가: 저장소 시드 + 외부 변경 구독 (최초 1회)
+  useEffect(() => {
+    // 1) 현재 카드들을 저장소에 업서트(초기 시드)
+    posts.forEach((p) => {
+      upsert({
+        id: p.id,
+        bookmarked: p.bookmarked,
+        bookmarkCount: p.bookmarkCount,
+        title: p.title,
+        image: p.image,
+        target: p.target,
+        period: p.period,
+        benefit: p.benefit,
+        dday: p.dday,
+      });
+    });
+
+    // 2) 저장소 상태로 로컬 posts 동기화
+    const store = getAll();
+    setPosts((prev) =>
+      prev.map((p) => {
+        const hit = store.find((x) => x.id === String(p.id));
+        return hit
+          ? {
+              ...p,
+              bookmarked: !!hit.scrab_done,
+              bookmarkCount:
+                typeof hit.scrab_count === 'number' ? hit.scrab_count : p.bookmarkCount,
+            }
+          : p;
+      })
+    );
+
+    // 3) 외부 페이지(Select 등)에서 변경되면 실시간 반영
+    const unsub = subscribe((list) => {
+      setPosts((prev) =>
+        prev.map((p) => {
+          const hit = list.find((x) => x.id === String(p.id));
+          return hit
+            ? {
+                ...p,
+                bookmarked: !!hit.scrab_done,
+                bookmarkCount:
+                  typeof hit.scrab_count === 'number' ? hit.scrab_count : p.bookmarkCount,
+              }
+            : p;
+        })
+      );
+    });
+
+    return () => unsub();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 최초 1회만
+
+  // ✅ 최소수정: 저장소 우선 토글 → 저장소값으로 로컬 반영
   const toggleBookmark = (id) => {
-    setPosts(prev =>
-      prev.map(p => {
+    toggleScrap(id);
+    const store = getAll();
+    setPosts((prev) =>
+      prev.map((p) => {
         if (p.id !== id) return p;
-        const turningOn = !p.bookmarked;
-        return {
-          ...p,
-          bookmarked: turningOn,
-          bookmarkCount: Math.max(0, p.bookmarkCount + (turningOn ? 1 : -1)),
-        };
+        const hit = store.find((x) => x.id === String(id));
+        return hit
+          ? {
+              ...p,
+              bookmarked: !!hit.scrab_done,
+              bookmarkCount:
+                typeof hit.scrab_count === 'number' ? hit.scrab_count : p.bookmarkCount,
+            }
+          : p;
       })
     );
   };

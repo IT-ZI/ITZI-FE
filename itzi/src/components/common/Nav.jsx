@@ -11,7 +11,7 @@ import PartnerStartModal from "../popup/PartnerStartModal"; // ✅ 추가
 const COOP_PATTERNS = [
   "/cooperation",
   "/partnering/*",
-  "/partner/*",
+  "/agreements/*",
   "/select",
   "/profile/*",
   "/inquiry/*",
@@ -182,7 +182,7 @@ const Nav = () => {
         brand={selectedBrand}
         onClose={() => setModalOpen(false)}
         onGo={() => {
-          nav("/partner/partnering");
+          nav("/partnering");
           setModalOpen(false);
         }}
       />

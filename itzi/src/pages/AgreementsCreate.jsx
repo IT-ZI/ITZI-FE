@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import ProfileDropdown from "../../components/common/ProfileDropdown";
-import priorbutton from "../../assets/img/priorbutton.png";
+import ProfileDropdown from "../components/common/ProfileDropdown";
+import priorbutton from "../assets/img/priorbutton.png";
 
-import "../../assets/scss/pages/AgreementCreatePage.scss";
+import "../assets/scss/pages/AgreementCreatePage.scss";
 
 export default function AgreementCreatePage() {
   const navigate = useNavigate();
@@ -138,7 +138,7 @@ export default function AgreementCreatePage() {
       console.log("협약 완료");
       setIsCompleted(true);
       // ✅ 제휴맺기 페이지로 복귀하며 완료 상태 전달
-      navigate("/partner/partnering", { state: { completedPartnerName: partnerName } });
+      navigate("/partnering", { state: { completedPartnerName: partnerName } });
     } else if (isCompleted && !isEditing) {
       // ✅ 완료 후 수정 버튼 클릭 시
       console.log("수정 모드 시작");

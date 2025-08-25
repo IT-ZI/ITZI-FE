@@ -108,11 +108,11 @@
         padding-right: 10px;
       }
   
-      .form-section {
-        margin-bottom: 12px;
-  
+            .form-section {
+        margin-bottom: 18px; // 18px로 간격 조정
+
         &:last-of-type {
-          margin-bottom: 8px;
+          margin-bottom: 12px; // 12px로 간격 조정
         }
   
         h3 {
@@ -125,8 +125,8 @@
         .input-group {
           display: flex;
           align-items: center;
-          margin-bottom: 8px;
-          gap: 10px;
+          margin-bottom: 18px; // 18px로 간격 조정
+          gap: 18px; // 18px로 간격 조정
   
           label {
             width: 120px;
@@ -268,26 +268,27 @@
     }
   }
 
-  /* ✅ 작성 모드 선택 오버레이 */
   .mode-overlay {
     position: fixed;
-    inset: 0;
-    background: #21212CB2; /* 배경 요구사항 */
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(33,33,44,0.7); 
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1200;
-
+    z-index: 9999;
+  
     .mode-card {
-      // 중앙 정렬된 고정 크기 카드
       width: 1008px;
+      max-width: calc(100vw - 40px);
       height: 888px;
+      max-height: calc(100vh - 40px);
+      overflow: auto;
       border-radius: 15px;
       border: 1.5px solid #D9DAEC;
       background: #FFFFFF;
       box-sizing: border-box;
       padding: 40px 20px;
-
+  
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -295,32 +296,41 @@
       gap: 24px;
       color: #21212C;
       text-align: center;
-
-      .mode-title { font-size: 32px; font-weight: 700; }
+  
+      .mode-title {
+        font-size: 32px;
+        font-weight: 700;
+      }
+  
+      /* ✅ 안내 박스 */
       .mode-desc {
-        width: 720px;
-        background: #21212CB2; /* 요청 색상 */
+        width: 704px;
+        height: 61px;
+        background: #8B8DA8;            /* 요청된 색 */
         border: 1px solid #EBECFF;
-        color: #FFFFFF;
         border-radius: 10px;
-        padding: 16px 20px;
+        padding: 10px;
+        gap: 3px;
         font-size: 14px;
         line-height: 1.6;
+        color: #fff;                    /* 글자색 흰색 */
+        display: flex;
+        align-items: center;            /* 수직 가운데 */
+        justify-content: center;        /* 수평 가운데 */
+        text-align: center;
       }
-      .mode-note { font-size: 12px; color: #535469; }
-
+  
+      .mode-note {
+        font-size: 12px;
+        color: #535469;
+      }
+  
       .mode-actions {
         display: flex;
         gap: 16px;
-
-        .manual-btn,
-        .auto-btn {
-          height: 36px;
-          padding: 0 18px;
-          border-radius: 7px;
-          border: 1px solid #C2C3D9;
-          cursor: pointer;
-          font-size: 14px;
+        .manual-btn, .auto-btn {
+          height: 36px; padding: 0 18px; border-radius: 7px;
+          border: 1px solid #C2C3D9; cursor: pointer; font-size: 14px;
         }
         .manual-btn { background: #D9DAEC; color: #21212C; }
         .auto-btn { background: #434DFD; color: #fff; }
@@ -328,3 +338,6 @@
       }
     }
   }
+  
+  .mode-overlay.hidden { display: none; }
+  

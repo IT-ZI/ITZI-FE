@@ -20,7 +20,113 @@ export default function ProfileHome() {
     org: "성신여자대학교 총학생회",
   });
 
-  // ✅ 보여줄 순서: 스팟츠, 동방, 빈티지 -> (스크롤 아래) 쉬즈베이글, 코칠리, 산문집
+  // ✅ API 응답 형태의 더미 데이터 (안전한 연동을 위해)
+  const [partnershipData, setPartnershipData] = useState({
+    isSuccess: true,
+    code: "COMMON200",
+    message: "성공입니다.",
+    result: [
+      {
+        partnershipId: 1,
+        senderId: 1,
+        senderDisplayName: "성신여대 총학생회",
+        receiverId: 5,
+        receiverDisplayName: "민호헤어샵",
+        purpose: "성신여대 총학생회 X 민호헤어샵 제휴 문의",
+        periodType: "SAME_AS_POST",
+        periodValue: null,
+        orgType: "AUTO",
+        orgValue: null,
+        detail: "안녕하세요, 성신여대 총학생회입니다. 학생들을 위한 미용 제휴를 문의드립니다.",
+        content: "안녕하세요, 민호헤어샵 관계자님께. 성신여자대학교 총학생회입니다...",
+        keywords: ["친절함", "학생할인", "제목필수"],
+        sendStatus: "SEND",
+        acceptedStatus: "WAITING"
+      },
+      {
+        partnershipId: 2,
+        senderId: 1,
+        senderDisplayName: "성신여대 총학생회",
+        receiverId: 2,
+        receiverDisplayName: "부산대 뷰티동아리",
+        purpose: "성신여대 총학 X 부산뷰티클럽 미용 행사 협업",
+        periodType: "CUSTOM",
+        periodValue: "2025-09-01 ~ 2025-09-30",
+        orgType: "AUTO",
+        orgValue: null,
+        detail: "안녕하세요, 성신여대 총학생회입니다. 부산 뷰티클럽과 함께 교내 미용 박람회를 공동 개최하고자 합니다.",
+        content: "안녕하세요, 부산뷰티클럽 담당자님께 편지를 드립니다...",
+        keywords: ["친절함"],
+        sendStatus: "SEND",
+        acceptedStatus: "WAITING"
+      }
+    ]
+  });
+  // ✅ 받은 문의함 데이터 (초기값: 빈 목록)
+  const [receivedData, setReceivedData] = useState({
+    isSuccess: true,
+    code: "COMMON200",
+    message: "성공입니다.",
+    result: [],
+  });
+
+  // ✅ 실제 API 호출 (마운트 시 1회)
+  useEffect(() => {
+    let aborted = false;
+    (async () => {
+      try {
+        const API_BASE = process.env.REACT_APP_API_BASE || 'https://api.onlyoneprivate.store';
+        const sentUrl = `${API_BASE}/partnership/1?sent=${Date.now()}`;
+        const receivedUrl = `${API_BASE}/partnership/1/received`;
+
+        const [sentRes, receivedRes] = await Promise.all([
+          fetch(sentUrl, { cache: 'no-store', headers: { Accept: 'application/json' } }),
+          fetch(receivedUrl, { cache: 'no-store', headers: { Accept: 'application/json' } }),
+        ]);
+
+        if (!sentRes.ok) throw new Error('보낸 문의함 서버 오류');
+        if (!receivedRes.ok) throw new Error('받은 문의함 서버 오류');
+
+        const [sentData, receivedJson] = await Promise.all([
+          sentRes.json(),
+          receivedRes.json(),
+        ]);
+
+        if (!aborted) {
+          if (sentData && sentData.isSuccess) {
+            const normalizedSent = Array.isArray(sentData.result)
+              ? sentData.result
+              : (sentData.result ? [sentData.result] : []);
+            setPartnershipData({ ...sentData, result: normalizedSent });
+            console.log('API 응답(보낸, 성공):', { url: sentUrl, data: sentData });
+          } else {
+            console.warn('보낸 문의 응답 형식이 예상과 다릅니다:', { url: sentUrl, data: sentData });
+          }
+
+          if (receivedJson && receivedJson.isSuccess) {
+            const normalizedReceived = Array.isArray(receivedJson.result)
+              ? receivedJson.result
+              : (receivedJson.result ? [receivedJson.result] : []);
+            setReceivedData({ ...receivedJson, result: normalizedReceived });
+            console.log('API 응답(받은, 성공):', { url: receivedUrl, data: receivedJson });
+          } else if (Array.isArray(receivedJson)) {
+            setReceivedData({ isSuccess: true, code: 'COMMON200', message: '성공입니다.', result: receivedJson });
+            console.log('API 응답(받은, 배열 포맷):', { url: receivedUrl, data: receivedJson });
+          } else {
+            console.warn('받은 문의 응답 형식이 예상과 다릅니다:', { url: receivedUrl, data: receivedJson });
+          }
+        }
+      } catch (e) {
+        console.error('API 호출 실패:', e);
+        // 실패 시 더미 데이터 유지 (UI 안정성 우선)
+      }
+    })();
+    return () => {
+      aborted = true;
+    };
+  }, []);
+
+  // ✅ 기존 혜택 데이터는 그대로 유지 (안전하게!)
   const [benefits, setBenefits] = useState([
     {
       id: "b1",
@@ -195,8 +301,8 @@ export default function ProfileHome() {
           <section className="row-top">
             <CalendarPanel items={calendarItems} />
             <InquiryPanel
-              sent={inquiries.sent}
-              received={inquiries.received}
+              sent={partnershipData.result} // ✅ 보낸 문의
+              received={receivedData.result} // ✅ 받은 문의
               onOpen={(type, id) => setModal({ type, id })}
             />
           </section>

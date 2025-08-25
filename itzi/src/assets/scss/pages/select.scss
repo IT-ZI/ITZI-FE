@@ -140,6 +140,10 @@
       padding: 16px;
       margin-top: 0;
       overflow: auto;
+      /* 스크롤 가능하되 바는 숨김 */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+      &::-webkit-scrollbar { display: none; } /* WebKit */
       position: relative;
   
       /* 내부 panel 클래스 스타일 제거 - 직접 content에 스타일 적용 */

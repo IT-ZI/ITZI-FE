@@ -22,10 +22,10 @@ function InquiryList({ items = [], onOpen = () => {}, mode = "sent" }) {
         ) : (
           <ul className="inq-list">
             {two.map((it) => (
-              <li key={it.id ?? it.name} className="inq-row">
+              <li key={it.partnershipId ?? it.id} className="inq-row">
                 <div className="row-left">
                   <img className="plane" src={icon} alt="" />
-                  <span className="text">{it.name}</span>
+                  <span className="text">{it.receiverDisplayName || it.name}</span>
                 </div>
                 <button type="button" className="inq-more-btn" onClick={() => onOpen(it)}>
                   <span className="detail">자세히 보기&nbsp;&gt;</span>

@@ -71,9 +71,14 @@
         align-items: center;
     }
 
-    .icon_container>img{
-        cursor: pointer;
+    /* 아이콘 주변 박스/버튼 스타일 제거 */
+    .icon_container .icon-btn{ 
+        appearance: none; background: transparent; border: 0; padding: 0; 
+        display: inline-flex; align-items: center; justify-content: center;
+        box-shadow: none; 
     }
+
+    .icon_container>img{ cursor: pointer; }
     
     .toggle{
         position:absolute;
@@ -81,12 +86,20 @@
         z-index: 999;
         right:60px;
     }
-    .profile{
-        width: 30.331px;
-        height: 31.163px;
-    }
-    .alarm{
-        width: 16.348px;
-        height: 20px;
+    .profile{ width: 28px; height: 28px; border-radius: 50%; display: block; }
+    .alarm{ width: 20px; height: 20px; display: block; }
+
+    /* 알림 배지 - 정원(원형)으로 고정 */
+    .alarm-btn { position: relative; }
+    .alarm-badge {
+        position: absolute;
+        top: -4px; right: -6px;
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        background: #FF4D4F; /* 빨간색 */
+        color: #fff;
+        font-size: 10px; line-height: 14px; font-weight: 700;
+        display: inline-block; text-align: center;
+        box-shadow: 0 0 0 2px #fff; /* 아이콘과 겹침 대비 */
     }
 }

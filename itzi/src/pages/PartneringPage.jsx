@@ -1,31 +1,31 @@
-// src/pages/partnering/PartneringPage.jsx
+// src/pages/PartneringPage.jsx
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import PartnerStartModal from "../../components/popup/PartnerStartModal";
-import ProfileDropdown from "../../components/common/ProfileDropdown";
-import InquiryModal from "../../components/profile/home/InquiryModal";
-import step2 from "../../assets/img/step2.png"; // 타이틀의 스텝 아이콘
-import partneringDone from "../../assets/img/Partnering_done.png";
-import partnering from "../../assets/img/Partnering.png";
+// import axios from "axios"; // 현재 미사용이면 주석/삭제해도 됩니다.
+import PartnerStartModal from "../components/popup/PartnerStartModal";
+import ProfileDropdown from "../components/common/ProfileDropdown";
+import InquiryModal from "../components/profile/home/InquiryModal";
+import step2 from "../assets/img/step2.png";
+import partneringDone from "../assets/img/Partnering_done.png";
+import partnering from "../assets/img/Partnering.png";
 
-// 레이아웃/카드 그리드 스타일
-import "../../assets/scss/pages/Partnering.scss";
-// ✅ Select SCSS도 import (문의 관련 스타일용)
-import "../../assets/scss/pages/select.scss";
+import "../assets/scss/pages/Partnering.scss";
+import "../assets/scss/pages/select.scss";
 
 export default function PartneringPage() {
   const nav = useNavigate();
   const { state } = useLocation();
+  const API_BASE = process.env.REACT_APP_API_BASE || "https://api.onlyoneprivate.store";
 
   // 페이지 상태
   const [open, setOpen] = useState(false);
   const [brand, setBrand] = useState("샤브온당");
 
-  // ✅ InquiryModal용 상태 추가
+  // 문의 상세 모달
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
 
-  // 데모 데이터 (나중에 API 연동 시 교체)
+  // 데모 리스트 (협의 중 / 협의 완료)
   const [pendingList, setPendingList] = useState([
     { id: 1, name: "샤브온당" },
     { id: 2, name: "카페규밀" },
@@ -35,8 +35,7 @@ export default function PartneringPage() {
     { id: 4, name: "요지뜨" },
   ]);
 
-  // 알림에서 넘어올 때 자동으로 모달 오픈
-  // 예: nav("/partnering", { state: { openStartModal: true, brand: "샤브온당" } })
+  // 알림에서 넘어오면 시작 모달 자동 오픈
   useEffect(() => {
     if (state?.openStartModal) {
       setBrand(state.brand ?? "샤브온당");
@@ -44,15 +43,14 @@ export default function PartneringPage() {
     }
   }, [state]);
 
-  // 완료 상태로 돌아온 경우: 보낸 문의함에서 협의완료 리스트로 이동
+  // 완료 상태로 돌아온 경우: 협의 완료 리스트로 이동
   useEffect(() => {
     const completedName = state?.completedPartnerName;
     if (!completedName) return;
 
-    setPendingList(prev => prev.filter(item => item.name !== completedName));
-    setDoneList(prev => {
-      // 이미 존재하면 중복 추가 방지
-      const exists = prev.some(item => item.name === completedName);
+    setPendingList((prev) => prev.filter((item) => item.name !== completedName));
+    setDoneList((prev) => {
+      const exists = prev.some((item) => item.name === completedName);
       return exists ? prev : [...prev, { id: Date.now(), name: completedName }];
     });
   }, [state]);
@@ -62,38 +60,37 @@ export default function PartneringPage() {
     setOpen(true);
   };
 
-  // ✅ 자세히 보기 클릭 시 InquiryModal 열기
   const openInquiryModal = (inquiry) => {
     setSelectedInquiry(inquiry);
     setInquiryModalOpen(true);
   };
 
-  // ✅ InquiryModal 닫기
   const closeInquiryModal = () => {
     setInquiryModalOpen(false);
     setSelectedInquiry(null);
   };
 
-  // ✅ 문의 삭제 처리
   const handleDeleteInquiry = async (inquiryId) => {
-    // 여기서 실제 삭제 로직 구현
     console.log("삭제할 문의 ID:", inquiryId);
-    // 성공적으로 삭제되면 모달 닫기
     closeInquiryModal();
   };
 
-  // ✅ 자세히 보기 클릭 시 AgreementPage로 이동 (보낸 문의함)
+  // ✅ AgreementPage로 라우팅 (API는 AgreementsPage/AgreementPage에서 호출)
   const openAgreementPage = (partner) => {
-    nav("/partner/agreement", { 
-      state: { partnerName: partner.name } 
+    if (!partner?.id) {
+      console.error("partner.id 없음");
+      return;
+    }
+    // 권장: 복수형 경로 사용 (/agreements/:id)
+    nav(`/agreements/${partner.id}`, {
+      state: { partnerName: partner.name, partnershipId: partner.id },
     });
+    // 만약 단수 경로 alias도 App.jsx에 추가했다면 아래도 동작함:
+    // nav(`/agreement/${partner.id}`, { state: { partnerName: partner.name, partnershipId: partner.id } });
   };
 
-  // ✅ 간단한 문의 리스트 컴포넌트 (PartneringPage 전용)
   const InquiryList = ({ items = [], mode = "sent" }) => {
-    // ✅ 이미지 변경: 보낸 문의함은 Partnering.png, 받은 문의함은 Partnering_done.png
     const icon = mode === "received" ? partneringDone : partnering;
-
     return (
       <div className="inquiry-list">
         {items.length === 0 ? (
@@ -106,15 +103,14 @@ export default function PartneringPage() {
                   <img className="icon" src={icon} alt="" />
                   <span className="text">{it.name}</span>
                 </div>
-                {/* ✅ 보낸 문의함일 때는 AgreementPage로 이동, 받은 문의함일 때는 InquiryModal */}
-                <button 
-                  type="button" 
-                  className="detail-btn" 
+                <button
+                  type="button"
+                  className="detail-btn"
                   onClick={() => {
                     if (mode === "sent") {
-                      openAgreementPage(it); // 보낸 문의함 → 협약서 작성 페이지
+                      openAgreementPage(it); // 보낸 문의함 → 협약서 페이지
                     } else {
-                      openInquiryModal(it);   // 받은 문의함 → 문의 상세 모달
+                      openInquiryModal(it);  // 받은 문의함 → 문의 상세 모달
                     }
                   }}
                 >
@@ -131,14 +127,13 @@ export default function PartneringPage() {
   return (
     <main className="partnering-page">
       <div className="container">
-        {/* ───────── 좌측 사이드바 ───────── */}
+        {/* 좌측 사이드바 */}
         <aside className="left">
           <ProfileDropdown />
         </aside>
 
-        {/* ───────── 우측 본문 ───────── */}
+        {/* 우측 본문 */}
         <section className="right">
-          {/* 페이지 타이틀 (요청 포맷) */}
           <header className="page-head">
             <div className="left-side">
               <div className="sub-title">제휴 맺기</div>
@@ -149,33 +144,26 @@ export default function PartneringPage() {
                 <h2 className="title">제휴 맺기</h2>
               </div>
             </div>
-
-            {/* 필요 시 오른쪽 액션들 배치 */}
-            {/* <div className="right-side"><button className="btn">버튼</button></div> */}
-
-            {/* 탭 (디자인 고정용) */}
             <div className="tabs">
-              <button className="tab active" type="button">제휴 맺기</button>
+              <button className="tab active" type="button">
+                제휴 맺기
+              </button>
             </div>
           </header>
 
-          {/* ✅ 콘텐츠 박스를 Select와 동일한 구조로 변경 */}
+          {/* 콘텐츠 박스 */}
           <div className="content">
             <div className="panel inquiry">
-              {/* ✅ 새로운 구조: 왼쪽/오른쪽 섹션으로 분리 */}
               <div className="inquiry-container">
-                {/* 왼쪽: 보낸 문의함 */}
                 <div className="inquiry-section sent-section">
-                  <h3 className="section-title">보낸 문의함</h3>
+                  <h3 className="section-title">협의 중</h3>
                   <InquiryList items={pendingList} mode="sent" />
                 </div>
 
-                {/* 중앙선 */}
                 <div className="inquiry-divider"></div>
 
-                {/* 오른쪽: 받은 문의함 */}
                 <div className="inquiry-section received-section">
-                  <h3 className="section-title">받은 문의함</h3>
+                  <h3 className="section-title">협의 완료</h3>
                   <InquiryList items={doneList} mode="received" />
                 </div>
               </div>
@@ -184,7 +172,7 @@ export default function PartneringPage() {
         </section>
       </div>
 
-      {/* ✅ InquiryModal 추가 */}
+      {/* 문의 상세 모달 */}
       <InquiryModal
         open={inquiryModalOpen}
         title={selectedInquiry?.name || ""}
@@ -198,7 +186,6 @@ export default function PartneringPage() {
         open={open}
         brand={brand}
         onClose={() => setOpen(false)}
-        // TODO: 실제 2단계 경로로 연결하기 (예: /partnering/step2)
         onGo={() => nav("/partnering")}
       />
     </main>

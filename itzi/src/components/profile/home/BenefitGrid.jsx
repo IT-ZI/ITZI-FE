@@ -30,13 +30,25 @@ const getThumb = (name) => {
 
 /** 숫자 필드 추출(여러 네이밍 케이스 허용) */
 const getCount = (b) => {
-  const v = b?.scrapCount ?? b?.scrap_count ?? b?.scrab_count ?? b?.likes ?? b?.like ?? 0;
+  const v =
+    b?.scrap ??
+    b?.count ??
+    b?.scrapCount ??
+    b?.scrap_count ??
+    b?.scrab_count ??
+    b?.likes ??
+    b?.like ?? 0;
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;
 };
 
 /** boolean 필드 추출(여러 네이밍 케이스 허용) */
-const getScrapped = (b) => Boolean(b?.scrapped ?? b?.scrap_done ?? b?.scrab_done);
+const getScrapped = (b) => {
+  const direct = b?.scrapped ?? b?.scrap_done ?? b?.scrab_done ?? b?.isScrapped ?? b?.bookmarked;
+  if (typeof direct === "boolean") return direct;
+  // 불리언이 없으면 count 기반 추론(0 초과면 true)
+  return getCount(b) > 0;
+};
 
 /** 저장소 갱신 유틸: localStorage / sessionStorage 동시 반영 */
 function persistToggle(id, makeScrapped) {
@@ -159,39 +171,11 @@ export default function BenefitGrid({
               <article key={b.id} className="benefit-card">
                 <div className="thumb">
                   <img src={b.thumb} alt={b.title} loading="lazy" />
-                </div>
-
-                {/* 본문(뱃지 기준 컨테이너) */}
-                <div className="body" style={{ position: "relative" }}>
-                  {/* ✅ 우상단 스크랩 뱃지 */}
-                  <div
-                    className="scrap-badge"
-                    role="group"
-                    aria-label="스크랩"
-                    style={{
-                      position: "absolute",
-                      top: 6,
-                      right: 8,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      zIndex: 99,
-                      visibility: "visible",
-                      opacity: 1,
-                    }}
-                  >
-                    <span
-                      className={`scrap-count ${b.on ? "on" : ""}`}
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 700,
-                        lineHeight: 1,
-                        color: b.on ? "#1FC37D" : "#5CCB9A",
-                      }}
-                    >
+                  {/* ✅ 썸네일 우상단 스크랩 뱃지 (확실히 보이도록 thumb 안에 배치) */}
+                  <div className="scrap-badge" role="group" aria-label="스크랩">
+                    <span className={`scrap-count ${b.on ? "on" : ""}`}>
                       {b.count}
                     </span>
-
                     <button
                       className={`scrap ${b.on ? "on" : ""}`}
                       onClick={(e) => {
@@ -201,25 +185,15 @@ export default function BenefitGrid({
                       disabled={readOnly}
                       aria-label={b.on ? "스크랩 해제" : "스크랩"}
                       title={readOnly ? "읽기 전용" : ""}
-                      style={{
-                        width: 20,
-                        height: 20,
-                        border: 0,
-                        background: "transparent",
-                        padding: 0,
-                        cursor: readOnly ? "default" : "pointer",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
                     >
-                      <img
-                        src={b.on ? scrabDone : scrab}
-                        alt=""
-                        style={{ width: 16, height: 16, display: "block" }}
-                      />
+                      <img src={b.on ? scrabDone : scrab} alt="" />
                     </button>
                   </div>
+                </div>
+
+                {/* 본문(뱃지 기준 컨테이너) */}
+                <div className="body" style={{ position: "relative" }}>
+                  {/* 본문 내에 있던 예비 뱃지는 SCSS에서 display:none 처리됨 (중복 방지) */}
 
                   <div className="title-row">
                     <h4 className="title" title={b.title}>

@@ -53,11 +53,11 @@ const ProfileDropdown = () => {
               <img src={step1} alt="" />
               <p>선택하기</p>
             </button>
-            <button type="button" className="list2" onClick={() => navigate("/partner/partnering")}>
+            <button type="button" className="list2" onClick={() => navigate("/partnering")}>
               <img src={step2} alt="" />
               <p>제휴 맺기</p>
             </button>
-            <button type="button" className="list2" onClick={() => navigate("/partner/progress")}>
+            <button type="button" className="list2" onClick={() => navigate("/progress")}>
               <img src={step3} alt="" />
               <p>진행하기</p>
             </button>

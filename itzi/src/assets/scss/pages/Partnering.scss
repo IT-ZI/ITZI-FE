@@ -49,21 +49,23 @@
       display: flex;
       gap: 8px;
   
-      .tab{
+      .tab {
         width: 158px;
         height: 38px;
-        padding: 10px 30px;
-        border: 1px solid transparent;
+        appearance: none; 
+        border: 1px solid transparent; 
         border-bottom: none;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        font-size: 14px;
+        background: #eef0ff; 
+        color: #7d7f9a; 
+        padding: 10px 30px; 
+        font-size: 13px; 
         font-weight: 700;
+        border-top-left-radius: 10px; 
+        border-top-right-radius: 10px; 
         cursor: pointer;
-        background: #eef0ff;
-        color: #7d7f9a;
-        line-height: 18px;
-        display: inline-flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         box-sizing: border-box;
       }
   
@@ -75,8 +77,10 @@
     }
   
     .content {
+      /* Select와 동일한 규격으로 통일 */
       width: 879px;
       height: 618px;
+      box-sizing: border-box;
       background: #fff;
       border: 1.5px solid #d9daec;
       border-top-left-radius: 0;
@@ -85,6 +89,12 @@
       border-bottom-left-radius: 15px;
       padding: 16px;
       margin-top: 0;  /* 탭과 밀착 */
+      overflow: auto;
+      /* 스크롤 가능하지만 바는 숨김 */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+      &::-webkit-scrollbar { display: none; } /* WebKit */
+      position: relative;
     }
   
     .columns {

@@ -1,30 +1,31 @@
-// src/pages/partner/Select.jsx
+// src/pages/Select.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import step1 from "../../assets/img/step1.png";
-import ProfileSidebar from "../../components/profile/home/ProfileSidebar";
-import BenefitGrid from "../../components/profile/home/BenefitGrid";
-import PartnerStartModal from "../../components/popup/PartnerStartModal";
-import InquiryModal from "../../components/profile/home/InquiryModal"; // ✅ 추가
+import step1 from "../assets/img/step1.png";
+import ProfileSidebar from "../components/profile/home/ProfileSidebar";
+import BenefitGrid from "../components/profile/home/BenefitGrid";
+import PartnerStartModal from "../components/popup/PartnerStartModal";
+import InquiryModal from "../components/profile/home/InquiryModal"; // ✅ 추가
 
 // ✅ 정확한 SCSS 경로
-import "../../assets/scss/pages/select.scss";
+import "../assets/scss/pages/select.scss";
 
 // ✅ 스크랩 공용 저장소 (Cooperation과 동일)
-import { getAll, subscribe } from "../../utils/scrapStore";
+import { getAll, subscribe } from "../utils/scrapStore";
 
 // ✅ 이미지 import 추가
-import plane from "../../assets/img/plane.png";
-import take from "../../assets/img/take.png";
+import plane from "../assets/img/plane.png";
+import take from "../assets/img/take.png";
 
 export default function Select() {
+  console.log("Select 컴포넌트 렌더링됨"); // 디버깅용
   const nav = useNavigate();
   const location = useLocation();
 
-  // 탭: 기본은 스크랩 탭, state에서 받은 탭이 있으면 그걸 사용
+  // 탭: 기본은 '제휴 문의' 탭, state에서 받은 탭이 있으면 그걸 사용
   const [activeTab, setActiveTab] = useState(
-    location.state?.activeTab || "scrap"
+    location.state?.activeTab || "inquiry"
   );
 
   // ✅ 팝업 모달 상태
@@ -77,7 +78,7 @@ export default function Select() {
 
   // ✅ PartneringPage로 이동하는 함수
   const goToPartnering = () => {
-    nav("/partner/partnering");
+    nav("/partnering");
     closeModal();
   };
 
